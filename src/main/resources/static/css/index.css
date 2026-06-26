@@ -1,0 +1,117 @@
+body{
+
+    margin:0;
+    background:#1e1f22;
+    color:white;
+    font-family:Arial;
+}
+
+header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px 60px;
+
+    background:#2b2d31;
+}
+
+.logo{
+
+    font-size:32px;
+    font-weight:bold;
+}
+.main-tab{
+
+    display:flex;
+}
+
+.main-tab a{
+
+    width:140px;
+    text-align:center;
+    padding:12px 0;
+
+    border:1px solid #333;
+
+    text-decoration:none;
+}
+
+.menu{
+
+    display:flex;
+    gap:25px;
+}
+
+.menu a{
+
+    color:white;
+    text-decoration:none;
+}
+
+main{
+
+    width:1200px;
+
+    margin:50px auto;
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:40px;
+}
+
+.job-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:30px;
+}
+
+.job-card{
+
+    background:#2b2d31;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    text-align:center;
+
+    transition:0.3s;
+}
+
+.job-card:hover{
+
+    transform:scale(1.05);
+
+    background:#3b82f6;
+}
+
+.job-card img{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+}
+
+.job-card a{
+
+    color:white;
+
+    text-decoration:none;
+}
+
+.job-card p{
+
+    margin-top:15px;
+
+    font-size:18px;
+}

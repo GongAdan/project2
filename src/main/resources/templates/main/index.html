@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CrystallineConflict</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body>
+    <div class="container">
+    
+        <header class="header">
+            <h1>Crystalline conflict</h1>
+    
+            <div class="auth">
+                <a th:href="@{/auth/login}">로그인</a>
+                /
+                <a th:href="@{/account/register}">회원가입</a>
+            </div>
+        </header>
+    
+<nav class="main-tab">
+
+    <a th:href="@{patchNote/list}">
+        패치노트
+    </a>
+
+    <a th:href="@{/signals}">
+        신호기
+    </a>
+
+</nav>
+    
+        <section class="job-grid">
+    
+            <a th:each="job : ${jobs}"
+               th:href="@{/jobs/{id}(id=${job.jobId})}"
+               class="job-card">
+    
+                <img th:src="${job.iconPath}" alt="">
+                <span th:text="${job.jobName}"></span>
+    
+            </a>
+    
+        </section>
+    
+    </div>
+</body>
+
+
+</html>
