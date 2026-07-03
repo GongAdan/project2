@@ -1,117 +1,115 @@
-body{
+.menu {
 
-    margin:0;
-    background:#1e1f22;
-    color:white;
-    font-family:Arial;
+    width: 1200px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    justify-content: flex-start;
+
+    gap: 56px;
+
+    margin-bottom: 25px;
 }
 
-header{
+.tab {
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    padding: 0;
 
-    padding:20px 60px;
+    margin: 0;
 
-    background:#2b2d31;
+    border: none;
+
+    background: none;
+
+    color: rgb(34, 30, 43);
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+    transition: .2s;
 }
 
-.logo{
+.tab:hover {
 
-    font-size:32px;
-    font-weight:bold;
-}
-.main-tab{
-
-    display:flex;
+    color: rgb(59, 144, 255);
 }
 
-.main-tab a{
+.tab.active {
 
-    width:140px;
-    text-align:center;
-    padding:12px 0;
-
-    border:1px solid #333;
-
-    text-decoration:none;
+    color: rgb(59, 144, 255);
 }
 
-.menu{
-
-    display:flex;
-    gap:25px;
+.menu a {
+    color: rgb(34, 30, 43);
+    text-decoration: none;
 }
 
-.menu a{
+.job-group {
 
-    color:white;
-    text-decoration:none;
+    margin-bottom: 14px;
 }
 
-main{
+.job-group h2 {
 
-    width:1200px;
+    color: #3b90ff;
 
-    margin:50px auto;
+    margin-bottom: 25px;
+
+    border-left: 6px solid #3b90ff;
+
+    padding-left: 15px;
+
+    font-size: 22px;
 }
 
-h1{
+.job-grid {
 
-    text-align:center;
+    display: grid;
 
-    margin-bottom:40px;
+    grid-template-columns: repeat(6, 120px);
+
+    gap: 20px;
+
+    justify-content: start;
+
 }
 
-.job-grid{
+.job-grid a:hover img {
 
-    display:grid;
-
-    grid-template-columns:repeat(5,1fr);
-
-    gap:30px;
+    transform: scale(1.08);
 }
 
-.job-card{
+.job-grid p {
 
-    background:#2b2d31;
+    margin-top: 25px;
 
-    border-radius:15px;
+    text-align: center;
 
-    padding:20px;
+    color: rgb(34, 30, 43);
 
-    text-align:center;
+    width: 100%;
 
-    transition:0.3s;
 }
 
-.job-card:hover{
+.job-grid a {
 
-    transform:scale(1.05);
+    display: flex;
 
-    background:#3b82f6;
+    flex-direction: column;
+
+    align-items: center;
+
+    text-decoration: none;
+
+    width: 90px;
 }
 
-.job-card img{
+.job-grid img {
 
-    width:90px;
-
-    height:90px;
-
-    border-radius:50%;
-}
-
-.job-card a{
-
-    color:white;
-
-    text-decoration:none;
-}
-
-.job-card p{
-
-    margin-top:15px;
-
-    font-size:18px;
+    width: 90px;
+    height: 90px;
+    transition: 0.3s;
 }

@@ -1,19 +1,18 @@
 package com.example.project2.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.project2.entity.Job;
 import com.example.project2.entity.Signal;
 
 public interface SignalRepository extends JpaRepository<Signal, Long> {
 
-    Optional<Signal> findBySessionId(String sessionId);
+    List<Signal> findByJobJobIdOrderBySlotNumber(Long jobId);
 
-    boolean existsBySessionId(String sessionId);
+    Optional<Signal> findFirstByJobJobIdAndActiveFalseOrderBySlotNumber(Long jobId);
 
-    void deleteBySessionId(String sessionId);
+    long countByJobJobIdAndActiveTrue(Long jobId);
 
-    Long countByJob(Job job);
 }

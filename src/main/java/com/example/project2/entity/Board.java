@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -77,4 +78,14 @@ public class Board {
     @Column(nullable = false)
     @Builder.Default
     private Integer attachCount = 0;
+
+    @Builder.Default
+    @ColumnDefault("0")
+    private Integer likeCount = 0;
+
+    @OneToMany(mappedBy = "board",
+                cascade = CascadeType.ALL,
+                orphanRemoval = true)
+    @Builder.Default
+    private List<BoardLike> boardLikeList = new ArrayList<>();
 }

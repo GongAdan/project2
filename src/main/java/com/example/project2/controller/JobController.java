@@ -1,49 +1,58 @@
 package com.example.project2.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.project2.common.BoardType;
 import com.example.project2.dto.BoardDTO;
 import com.example.project2.service.BoardService;
+import com.example.project2.service.JobService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 
 @Controller
-@RequestMapping("/main/jobs")
+@RequestMapping("/job")
 @RequiredArgsConstructor
 public class JobController {
 
+    private final JobService jobService;
     private final BoardService boardService;
 
-    @GetMapping("/{jobId}/boards")
-    public String boardList(
+    @GetMapping("/{jobId}")
+    public String detail(@PathVariable Long jobId, Model model) {
+
+        model.addAttribute("job", jobService.getJob(jobId));
+
+        model.addAttribute("guideList",
+                boardService.getBoardsByJobAndType(
+                        jobId,
+                        BoardType.GUIDE,
+                        PageRequest.of(0, 10)));
+
+        model.addAttribute("macroList",
+                boardService.getBoardsByJobAndType(
+                        jobId,
+                        BoardType.MACRO,
+                        PageRequest.of(0, 10)));
+
+        return "job/guide";
+    }
+
+    @GetMapping("/{jobId}/guide/register")
+    public String writeGuide(
             @PathVariable Long jobId,
-            @RequestParam BoardType type,
-            @PageableDefault(
-                size = 10,
-                sort = "boardId",
-                direction = Sort.Direction.DESC)
-            Pageable pageable,
             Model model) {
 
-        Page<BoardDTO> boards = boardService.getBoardsByJobAndType(
-                jobId,
-                type,
-                pageable);
+        model.addAttribute("job",
+                jobService.getJob(jobId));
 
-        model.addAttribute("boards", boards);
-        model.addAttribute("jobId", jobId);
-        model.addAttribute("type", type);
+        model.addAttribute("boardDTO",
+                new BoardDTO());
 
-        return "board/list";
+        return "board/register";
     }
 }

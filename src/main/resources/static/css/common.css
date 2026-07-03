@@ -1,0 +1,109 @@
+body {
+    margin: 0;
+    background: #e8eaf0;
+    color: white;
+    font-family: Arial;
+    overflow-y: scroll;
+}
+
+header {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 0; /* 원래의 시원한 패딩 유지 */
+}
+
+.logo {
+    font-size: 52px; /* 원래의 큰 로고 크기 유지 */
+    font-weight: bold;
+    color: rgb(59, 144, 255);
+    text-decoration: none;
+}
+
+.header-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
+}
+
+/* 비로그인 링크 */
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 40px; /* 원래의 40px 간격 유지 */
+}
+
+.header-section a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.header-section a:hover {
+    color: #3b90ff;
+}
+
+/* ===================================================
+   [새로운 HTML 구조 반영] 로그인 상태 가로 정렬 영역
+=================================================== */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 닉네임 -> 마이페이지 -> 로그아웃 사이의 간격 */
+}
+
+.user-menu .user-nickname {
+    color: #333;
+    font-weight: 600;
+}
+
+.logout-form {
+    display: flex;
+    align-items: center;
+    margin: 0; /* form 기본 여백 제거 */
+}
+
+/* ===================================================
+   [버튼 디자인] 기존 input[type="submit"] 스타일을 새 버튼에 이식
+=================================================== */
+.header-btn {
+    border: none;
+    background: #3b90ff;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    font-family: Arial;
+    text-decoration: none; /* 마이페이지 a 태그 밑줄 제거 */
+    display: inline-flex;
+    align-items: center;
+    transition: .2s;
+}
+
+.header-btn:hover {
+    background: #2d7de5;
+}
+
+/* 로그아웃 버튼만 포인트를 주고 싶다면 빨간색 적용 (선택 사항, 싫으시면 지우셔도 됩니다) */
+.logout-btn {
+    background: #ef5350;
+}
+.logout-btn:hover {
+    background: #e53935;
+}
+
+/* =================================================== */
+
+main {
+    width: 1200px;
+    margin: 30px auto;
+}

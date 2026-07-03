@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>게시글 목록</title>
+    <link rel="stylesheet" th:href="@{/css/match.css}">
+</head>
+
+<body>
+
+    <form th:action="@{/signal/on}" method="post">
+
+        <select name="jobId">
+
+            <option th:each="job : ${jobs}" th:value="${job.jobId}" th:text="${job.jobName}">
+            </option>
+
+        </select>
+
+        <button type="submit">
+            켜기
+        </button>
+
+    </form>
+    <div class="signal-box" th:if="${signals != null}">
+
+        <div th:each="signal : ${signals}" 
+            th:class="${signal.active} ? 'light on' : 'light off'">
+        </div>
+
+    </div>
+    <div th:each="signal : ${signals}"
+     class="light"
+     th:classappend="${signal.active} ? ' on' : ' off'">
+</div>
+</body>
+
+</html>

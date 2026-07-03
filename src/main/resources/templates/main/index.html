@@ -1,51 +1,113 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
+    <th:block th:replace="~{common/head :: commonHead}"></th:block>
     <title>CrystallineConflict</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
+
 </head>
 
 <body>
-    <div class="container">
-    
-        <header class="header">
-            <h1>Crystalline conflict</h1>
-    
-            <div class="auth">
-                <a th:href="@{/auth/login}">로그인</a>
-                /
-                <a th:href="@{/account/register}">회원가입</a>
+
+    <th:block th:replace="~{common/header :: header}"></th:block>
+    <main>
+
+        <nav class="menu">
+            <a class="tab" href="https://www.ff14.co.kr/news/notice/view/2865#pvp">7.5 패치노트</a>
+            <a class="tab" th:href="@{/signals/match}">등급전 신호기</a>
+        </nav>
+        <hr>
+        <br>
+        <br>
+
+        <section class="job-group">
+
+            <h2>TANK</h2>
+
+            <div class="job-grid">
+
+                <a th:each="job : ${tanks}" th:href="@{/job/{id}(id=${job.jobId})}">
+
+                    <img th:src="@{${job.iconPath}}">
+                    <p th:text="${job.jobName}"></p>
+
+                </a>
+
             </div>
-        </header>
-    
-<nav class="main-tab">
 
-    <a th:href="@{patchNote/list}">
-        패치노트
-    </a>
-
-    <a th:href="@{/signals}">
-        신호기
-    </a>
-
-</nav>
-    
-        <section class="job-grid">
-    
-            <a th:each="job : ${jobs}"
-               th:href="@{/jobs/{id}(id=${job.jobId})}"
-               class="job-card">
-    
-                <img th:src="${job.iconPath}" alt="">
-                <span th:text="${job.jobName}"></span>
-    
-            </a>
-    
         </section>
-    
-    </div>
-</body>
 
+        <section class="job-group">
+
+            <h2>HEALER</h2>
+
+            <div class="job-grid">
+
+                <a th:each="job : ${healers}" th:href="@{/job/{id}(id=${job.jobId})}">
+
+                    <img th:src="@{${job.iconPath}}">
+                    <p th:text="${job.jobName}"></p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="job-group">
+
+            <h2>MELEE</h2>
+
+            <div class="job-grid">
+
+                <a th:each="job : ${melees}" th:href="@{/job/{id}(id=${job.jobId})}">
+
+                    <img th:src="@{${job.iconPath}}">
+                    <p th:text="${job.jobName}"></p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="job-group">
+
+            <h2>RANGED</h2>
+
+            <div class="job-grid">
+
+                <a th:each="job : ${rangeds}" th:href="@{/job/{id}(id=${job.jobId})}">
+
+                    <img th:src="@{${job.iconPath}}">
+                    <p th:text="${job.jobName}"></p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="job-group">
+
+            <h2>CASTER</h2>
+
+            <div class="job-grid">
+
+                <a th:each="job : ${casters}" th:href="@{/job/{id}(id=${job.jobId})}">
+
+                    <img th:src="@{${job.iconPath}}">
+                    <p th:text="${job.jobName}"></p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
 
 </html>

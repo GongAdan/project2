@@ -1,0 +1,292 @@
+/* ===========================
+   Container
+=========================== */
+
+.board-container{
+
+    width:100%;
+
+    max-width:900px;
+
+    margin:0 auto;
+
+    background:white;
+
+    padding:45px;
+
+    border-radius:18px;
+
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
+
+    box-sizing:border-box;
+}
+
+
+/* ===========================
+   Title
+=========================== */
+
+.board-container h1{
+
+    margin:0 0 35px;
+
+    color:#222;
+
+    font-size:36px;
+
+    font-weight:700;
+}
+
+
+/* ===========================
+   Form
+=========================== */
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    margin-bottom:28px;
+}
+
+.form-group label{
+
+    margin-bottom:10px;
+
+    color:#444;
+
+    font-size:16px;
+
+    font-weight:bold;
+}
+
+
+/* ===========================
+   Input
+=========================== */
+
+.form-group input[type="text"]{
+
+    padding:14px 18px;
+
+    border:1px solid #d7dce5;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    transition:.2s;
+}
+
+.form-group input[type="text"]:focus{
+
+    outline:none;
+
+    border-color:#3b90ff;
+
+    box-shadow:0 0 0 3px rgba(59,144,255,.15);
+}
+
+
+/* ===========================
+   Textarea
+=========================== */
+
+.form-group textarea{
+
+    resize:vertical;
+
+    min-height:420px;
+
+    padding:18px;
+
+    border:1px solid #d7dce5;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    line-height:1.8;
+
+    transition:.2s;
+
+    font-family:inherit;
+}
+
+.form-group textarea:focus{
+
+    outline:none;
+
+    border-color:#3b90ff;
+
+    box-shadow:0 0 0 3px rgba(59,144,255,.15);
+}
+
+
+/* ===========================
+   File
+=========================== */
+
+.form-group input[type="file"]{
+
+    padding:12px;
+
+    border:1px solid #d7dce5;
+
+    border-radius:10px;
+
+    background:#fafafa;
+}
+
+
+/* ===========================
+   Buttons
+=========================== */
+
+.button-group{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    margin-top:40px;
+}
+
+.save-btn{
+
+    border:none;
+
+    background:#3b90ff;
+
+    color:white;
+
+    padding:12px 30px;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.save-btn:hover{
+
+    background:#2578dd;
+}
+
+.cancel-btn{
+
+    background:#8d97a5;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:12px 30px;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    transition:.2s;
+}
+
+.cancel-btn:hover{
+
+    background:#737d8c;
+}
+
+
+/* ===========================
+   Placeholder
+=========================== */
+
+::placeholder{
+
+    color:#aaa;
+}
+
+/* 파일 리스트 전체 */
+.file-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 파일 하나 아이템 */
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 8px 10px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+
+    background-color: #fafafa;
+
+    font-size: 13px;
+    color: #444;
+}
+
+/* 삭제 버튼 */
+.file-item button {
+    border: none;
+    background: transparent;
+
+    color: #ff5c5c;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.file-item button:hover {
+    color: #e60000;
+}
+
+.existing-file {
+    background: #f3f3f3;
+}
+
+/* ===========================
+   첨부파일 추가 버튼 (글쓰기 스타일 통일)
+=========================== */
+#btnFileSelect {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px; /* 살짝 둥글게 하려면 유지, 완전히 각진 게 좋다면 삭제 */
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+#btnFileSelect:hover {
+    background-color: #e5e5e5;
+    border-color: #adadad;
+}
+
+/* 새로 추가될 파일 목록 컨테이너 여백 */
+#fileListContainer {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

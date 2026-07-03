@@ -21,7 +21,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             // 게시글 작성, 수정, 삭제는 일반 사용자만 가능하도록 설정 
-            .requestMatchers("/board/register", "/board/edit", "/board/delete").hasRole("USER")
+            .requestMatchers("/board/register", "/board/edit", "/board/delete", "/board/like").hasAnyRole("USER","ADMIN")
             // hasRole("USER"): ROLE 이름이 ROLE_USER인 사용자에 대한 접근 권한 부여 
             // 위 경로 외에 나머지 경로는 모든 권한 접근 가능 
             .anyRequest().permitAll()
@@ -29,7 +29,7 @@ public class SecurityConfig {
         .formLogin(
             form -> form.loginPage("/auth/login") // 커스텀 로그인 페이지 경로 연결(/templates/auth/login.html페이지를 의미)
                         .loginProcessingUrl("/auth/login") // login POST 처리 URL(form action 경로와 일치)
-                        .defaultSuccessUrl("/board/list", true) // 로그인 성공 시 이동 URL
+                        .defaultSuccessUrl("/", false) // 로그인 성공 시 이동 URL
                         .failureUrl("/auth/login?errorMsg=true") // 로그인 실패 시 이동 URL
                         .permitAll() // 로그인 페이지 URL을 모든 사용자 접근 허용 
         ) 

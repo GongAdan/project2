@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>패치노트</title>
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr th:each="patch : ${patchNotes}">
+
+            <td>
+                <a th:href="@{/patch/{id}(id=${patch.patchNoteId})}" th:text="${patch.title}">
+                </a>
+            </td>
+
+            <td th:text="${#temporals.format(patch.createdAt,'yyyy-MM-dd')}"></td>
+
+        </tr>
+</body>
+
+</html>

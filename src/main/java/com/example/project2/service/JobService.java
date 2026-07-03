@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.project2.common.JobRole;
 import com.example.project2.dto.JobDTO;
 import com.example.project2.entity.Job;
 import com.example.project2.repository.JobRepository;
@@ -36,6 +37,12 @@ public class JobService {
         return toDTO(job);
     }
 
+    public List<Job> getJobsByRole(JobRole role){
+
+    return jobRepository.findByRoleOrderByDisplayOrder(role);
+
+}
+
     private JobDTO toDTO(Job job) {
 
         return JobDTO.builder()
@@ -43,6 +50,7 @@ public class JobService {
                 .jobName(job.getJobName())
                 .description(job.getDescription())
                 .iconPath(job.getIconPath())
+                .role(job.getRole())
                 .build();
     }
 }

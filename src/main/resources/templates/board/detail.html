@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{common/head :: commonHead}" />
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+    <title th:text="${board.title}"></title>
+</head>
+
+
+<body>
+
+    <th:block th:replace="~{common/header :: header}" />
+
+    <main>
+
+        <div class="content">
+
+            <h1 class="board-title" th:text="${board.title}">
+            </h1>
+
+            <div class="board-info">
+
+                <span>
+                    작성자
+                    <strong th:text="${board.nickname}"></strong>
+                </span>
+
+                <span>
+                    등록일
+                    <strong th:text="${#temporals.format(board.createdAt,'yyyy-MM-dd HH:mm')}"></strong>
+                </span>
+
+                <span>
+                    조회
+                    <strong th:text="${board.viewCount}"></strong>
+                </span>
+
+                <span>
+                    추천
+                    <strong th:text="${board.likeCount}"></strong>
+                </span>
+
+            </div>
+
+            <hr>
+
+            <div class="board-content" th:utext="${board.content}">
+            </div>
+
+            <div class="attach-image-area" th:if="${!#lists.isEmpty(board.attachList)}">
+
+                <div th:each="file : ${board.attachList}">
+
+                    <img th:src="@{${file.filePath}}" class="attach-image">
+
+                </div>
+
+            </div>
+
+            <div class="button-area">
+
+                <a class="list-btn" th:href="@{/job/{id}(id=${board.jobId})}">
+                    목록
+                </a>
+
+                <th:block sec:authorize="isAuthenticated()">
+
+                    <a class="edit-btn" th:href="@{/board/edit(boardId=${board.boardId})}"
+                        th:if="${#authentication.name == board.username}">
+                        수정
+                    </a>
+
+                    <form th:action="@{/board/delete}" method="post" style="display: inline;"
+                        th:if="${#authentication.name == board.username}">
+
+                        <input type="hidden" name="boardId" th:value="${board.boardId}">
+
+                        <button class="delete-btn" type="button" id="deleteBtn">
+                            삭제
+                        </button>
+                    </form>
+
+                </th:block>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="board-action">
+
+            <button id="favoriteBtn" class="favorite-btn">
+                ⭐ 즐겨찾기
+            </button>
+
+            <button id="likeBtn" class="recommend-btn" th:classappend="${board.liked} ? 'active' : ''">
+                👍
+                <span id="likeText" th:text="${board.liked} ? '추천' : '추천'">추천</span>
+                (<span id="likeCount" th:text="${board.likeCount}">0</span>)
+            </button>
+
+        </div>
+
+        <hr>
+
+        <section class="comment-section">
+
+            <h2>댓글</h2>
+
+            <form class="comment-write" id="commentForm">
+
+                <input type="hidden" id="commentBoardId" th:value="${board.boardId}">
+
+                <textarea id="commentContent" name="content" placeholder="댓글을 입력하세요."></textarea>
+
+                <button type="submit">
+                    등록
+                </button>
+
+            </form>
+
+            <div class="comment-list" id="commentList">
+
+                <p class="no-comment" th:if="${commentList != null && commentList.size() == 0}"
+                    style="color: #888888; text-align: center; margin: 20px 0;">
+                    등록된 댓글이 없습니다.
+                </p>
+
+                <div class="comment-card" th:each="comment : ${commentList}">
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-user" th:text="${comment.nickname}"></span>
+                            <span class="comment-date"
+                                th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+
+                        <div class="comment-actions" th:if="${#strings.equals(#authentication.name, comment.username)}">
+                            <button type="button" class="comment-edit-btn"
+                                th:onclick="|editComment(${comment.commentId})|">수정</button>
+                            <button type="button" class="comment-delete-btn"
+                                th:onclick="|deleteComment(${comment.commentId})|">삭제</button>
+                        </div>
+                    </div>
+                    <div class="comment-content" th:text="${comment.content}"></div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <hr>
+
+        <div id="deleteModal" class="modal">
+
+            <div class="modal-box">
+
+                <h3>게시글을 삭제하시겠습니까?</h3>
+
+                <div class="modal-btns">
+
+                    <button id="cancelDelete">
+                        취소
+                    </button>
+
+                    <button id="confirmDelete">
+                        삭제
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="loginModal" class="modal">
+
+            <div class="modal-box">
+
+                <h3>회원만 이용 가능한 기능입니다.</h3>
+
+                <div class="modal-btns">
+
+                    <button onclick="closeModal()">
+                        닫기
+                    </button>
+
+                    <button onclick="goLogin()">
+                        로그인
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <input type="hidden" id="commentBoardId" th:value="${board.boardId}">
+
+        <input type="hidden" id="isUserLoggedIn" th:value="${#authorization.expression('isAuthenticated()')}">
+        <input type="hidden" id="currentLoginUser" th:value="${#authentication.name}">
+
+
+    </main>
+
+</body>
+
+<script th:inline="javascript">
+
+    // 1. HTML hidden input에서 값을 안전하게 읽어옴 (# 에러 원천 차단)
+    const loginUserElem = document.getElementById("currentLoginUser");
+    const currentUsername = loginUserElem ? loginUserElem.value : null;
+
+    const loggedInElem = document.getElementById("isUserLoggedIn");
+    // 문자열 "true"를 실제 논리값 true로 변환
+    const isLogin = loggedInElem ? (loggedInElem.value === "true") : false;
+
+    // 2. 글로벌 모달 객체 및 데이터 바인딩
+    const deleteModal = document.getElementById("deleteModal");
+    const loginModal = document.getElementById("loginModal");
+
+    const boardId = /*[[${board.boardId}]]*/ 0;
+    const jobId = /*[[${board.jobId}]]*/ 0;
+
+    // 로그인 모달 제어 함수
+    function showLoginModal() {
+        loginModal.style.display = "flex";
+    }
+
+    function closeModal() {
+        loginModal.style.display = "none";
+    }
+
+    function goLogin() {
+        location.href = "/auth/login";
+    }
+
+    // ================= [게시글 삭제 로직] =================
+    const deleteBtn = document.getElementById("deleteBtn");
+    if (deleteBtn) {
+        deleteBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            deleteModal.style.display = "flex";
+        });
+    }
+
+    document.getElementById("cancelDelete").onclick = function () {
+        deleteModal.style.display = "none";
+    };
+
+    document.getElementById("confirmDelete").onclick = function () {
+        fetch("/board/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "boardId=" + boardId
+        })
+            .then(res => {
+                if (res.ok) {
+                    alert("삭제되었습니다.");
+                    location.href = "/job/" + jobId;
+                } else {
+                    alert("삭제 실패");
+                }
+            });
+    };
+
+    // ================= [추천 버튼 클릭 이벤트] =================
+    document.getElementById("likeBtn").addEventListener("click", function () {
+        // 💡 HTML에서 미리 판별해 둔 상단 글로벌 변수(isLogin)를 활용합니다! (# 탈출)
+        if (!isLogin) {
+            showLoginModal();
+            return;
+        }
+
+        fetch("/board/like", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "boardId=" + boardId
+        })
+            .then(res => {
+                if (res.status === 401 || res.status === 403) {
+                    showLoginModal();
+                    throw new Error("비로그인 유저의 요청입니다.");
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data === null || data === undefined) return;
+
+                const btn = document.getElementById("likeBtn");
+                const text = document.getElementById("likeText");
+                const countSpan = document.getElementById("likeCount");
+
+                if (data.liked) {
+                    btn.classList.add("active");
+                    text.innerText = "추천함";
+                } else {
+                    btn.classList.remove("active");
+                    text.innerText = "추천";
+                }
+
+                if (countSpan && data.likeCount !== undefined) {
+                    countSpan.innerText = data.likeCount;
+                }
+            })
+            .catch(err => {
+                console.warn("추천 처리 흐름 제어:", err.message);
+            });
+    });
+
+    // ================= [즐겨찾기 버튼 클릭 이벤트] =================
+    document.getElementById("favoriteBtn").addEventListener("click", function () {
+        // 💡 여기도 상단 글로벌 변수(isLogin)를 활용합니다!
+        if (!isLogin) {
+            showLoginModal();
+            return;
+        }
+        // 여기에 즐겨찾기 비동기 요청 코드 작성...
+    });
+
+    // ================= [댓글 비동기(AJAX) 등록 로직] =================
+    const commentForm = document.getElementById("commentForm");
+
+    if (commentForm) {
+        commentForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const boardId = document.getElementById("commentBoardId").value;
+            const content = document.getElementById("commentContent").value;
+
+            if (!content.trim()) {
+                alert("댓글 내용을 입력해주세요.");
+                return;
+            }
+
+            const commentData = {
+                boardId: Number(boardId),
+                content: content
+            };
+
+            fetch("/api/comment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(commentData)
+            })
+                .then(res => {
+                    if (res.status === 401) {
+                        showLoginModal();
+                        throw new Error("로그인이 필요합니다.");
+                    }
+                    if (!res.ok) {
+                        throw new Error("댓글 등록에 실패했습니다.");
+                    }
+                    return res.json();
+                })
+                .then(commentList => {
+                    document.getElementById("commentContent").value = "";
+                    renderComments(commentList);
+                })
+                .catch(err => {
+                    console.error("댓글 에러:", err.message);
+                });
+        });
+    }
+
+    // ================= [댓글 목록 렌더링 함수] =================
+    function renderComments(commentList) {
+        const commentListContainer = document.getElementById("commentList");
+        commentListContainer.innerHTML = "";
+
+        if (commentList.length === 0) {
+            commentListContainer.innerHTML = "<p class='no-comment'>등록된 댓글이 없습니다.</p>";
+            return;
+        }
+
+        commentList.forEach(comment => {
+            const date = new Date(comment.createdAt);
+            const formattedDate = date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(date.getDate()).padStart(2, '0') + ' ' +
+                String(date.getHours()).padStart(2, '0') + ':' +
+                String(date.getMinutes()).padStart(2, '0');
+
+            let actionButtons = "";
+            if (currentUsername && currentUsername === comment.username) {
+                actionButtons = `
+                    <div class="comment-actions">
+                        <button type="button" class="comment-edit-btn" onclick="editComment(${comment.commentId})">수정</button>
+                        <button type="button" class="comment-delete-btn" onclick="deleteComment(${comment.commentId})">삭제</button>
+                    </div>
+                `;
+            }
+
+            const commentCard = `
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-user">${comment.nickname}</span>
+                            <span class="comment-date">${formattedDate}</span>
+                        </div>
+                        ${actionButtons}
+                    </div>
+                    <div class="comment-content">${comment.content}</div>
+                </div>
+            `;
+
+            commentListContainer.insertAdjacentHTML("beforeend", commentCard);
+        });
+    }
+
+    // ================= [댓글 삭제 로직] =================
+    function deleteComment(commentId) {
+        if (!confirm("댓글을 정말로 삭제하시겠습니까?")) return;
+
+        const boardId = document.getElementById("commentBoardId").value;
+
+        fetch(`/api/comment/${commentId}?boardId=${Number(boardId)}`, {
+            method: "DELETE"
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("댓글 삭제에 실패했습니다.");
+                return res.json();
+            })
+            .then(commentList => {
+                renderComments(commentList);
+            })
+            .catch(err => alert(err.message));
+    }
+
+    // ================= [댓글 수정 창 전환] =================
+    function editComment(commentId) {
+        const commentCard = document.querySelector(`button[onclick="editComment(${commentId})"]`).closest('.comment-card');
+        const contentDiv = commentCard.querySelector('.comment-content');
+
+        if (contentDiv.querySelector('.edit-box')) return;
+
+        const originalContent = contentDiv.innerText;
+
+        contentDiv.innerHTML = `
+            <div class="edit-box" style="margin-top:10px;">
+                <textarea id="editContent_${commentId}" style="width:100%; min-height:60px; padding:8px; border:1px solid #ccc; border-radius:4px; resize:none;">${originalContent}</textarea>
+                <div style="text-align:right; margin-top:5px;">
+                    <button type="button" onclick="saveEdit(${commentId})" style="background:#f1c40f; border:none; padding:4px 8px; border-radius:4px; font-size:12px; cursor:pointer;">완료</button>
+                    <button type="button" id="cancelBtn_${commentId}" style="background:#eee; border:none; padding:4px 8px; border-radius:4px; font-size:12px; cursor:pointer; margin-left:4px;">취소</button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById(`cancelBtn_${commentId}`).addEventListener('click', function () {
+            contentDiv.innerText = originalContent;
+        });
+    }
+
+    // ================= [댓글 수정 완료(저장)] =================
+    function saveEdit(commentId) {
+        const boardId = document.getElementById("commentBoardId").value;
+        const newContent = document.getElementById(`editContent_${commentId}`).value;
+
+        if (!newContent.trim()) {
+            alert("내용을 입력해주세요.");
+            return;
+        }
+
+        const commentData = {
+            boardId: Number(boardId),
+            content: newContent
+        };
+
+        fetch(`/api/comment/${commentId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(commentData)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("댓글 수정에 실패했습니다.");
+                return res.json();
+            })
+            .then(commentList => {
+                renderComments(commentList);
+            })
+            .catch(err => alert(err.message));
+    }
+
+</script>
+
+
+</html>

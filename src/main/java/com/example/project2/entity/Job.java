@@ -3,12 +3,16 @@ package com.example.project2.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.project2.common.JobRole;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,15 +33,18 @@ public class Job {
     @Column(name = "job_id")
     private Long jobId; // 직업번호
 
-    @Column(nullable = false, length = 50)
-    private String jobName; // 직업
+    private String jobName;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String description; // 직업 설명
+    private String description;
 
-    @Column(length = 255)
     private String iconPath;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private JobRole role;
+
+    @Column(nullable = false)
+    private Integer displayOrder;
 
     @OneToMany(mappedBy = "job")
     @Builder.Default
@@ -47,7 +54,7 @@ public class Job {
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Signal> signals = new ArrayList<>();
 }

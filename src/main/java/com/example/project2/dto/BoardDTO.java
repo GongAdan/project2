@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.project2.common.BoardType;
 
 import lombok.AllArgsConstructor;
@@ -20,16 +22,23 @@ public class BoardDTO {
     private Long boardId;
     private String title;
     private String content;
+    private String username;
     private BoardType boardType;
     private Integer viewCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long accountId;
     private String nickname;
     private Long jobId;
     private String jobName;
+    private Integer likeCount;
+    private boolean liked;
     private Integer commentCount;
+    private int attachCount;
+    private List<AttachDTO> attaches;
+    private List<Long> deletedImageIds;
     @Builder.Default
     private List<AttachDTO> attachList = new ArrayList<>();
+    @Builder.Default
+    private List<MultipartFile> files = new ArrayList<>();
 
 }

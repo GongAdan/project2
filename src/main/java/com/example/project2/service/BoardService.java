@@ -1,29 +1,43 @@
 package com.example.project2.service;
 
+import com.example.project2.repository.BoardLikeRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.project2.common.BoardType;
 import com.example.project2.dto.AttachDTO;
 import com.example.project2.dto.BoardDTO;
+import com.example.project2.entity.Account;
 import com.example.project2.entity.Attach;
 import com.example.project2.entity.Board;
+import com.example.project2.entity.Job;
+import com.example.project2.repository.AccountRepository;
+import com.example.project2.repository.AttachRepository;
 import com.example.project2.repository.BoardRepository;
 import com.example.project2.repository.CommentRepository;
+import com.example.project2.repository.JobRepository;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
+        private final BoardLikeRepository boardLikeRepository;
         private final BoardRepository boardRepository;
         private final CommentRepository commentRepository;
+        private final JobRepository jobRepository;
+        private final AccountRepository accountRepository;
+        private final AttachRepository attachRepository;
+        private final FileStorageService fileStorageService;
+        private final BoardLikeService boardLikeService;
 
         public Page<BoardDTO> getBoardsByJobAndType(
                         Long jobId,
@@ -40,52 +54,163 @@ public class BoardService {
 
         // 게시글 등록
         @Transactional
-        public int saveBoard(BoardDTO boardDTO) {
-                // board 인스턴스 생성(title, content, writer 데이터 적용)
-                // boardDTO에서 게시판 데이터만 board로 변경
+        public int saveBoard(BoardDTO boardDTO, String username) {
+
+                Account account = accountRepository.findByUsername(username)
+                                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+                Job job = jobRepository.findById(boardDTO.getJobId())
+                                .orElseThrow(() -> new IllegalArgumentException("직업이 존재하지 않습니다."));
+
                 Board board = Board.builder()
                                 .title(boardDTO.getTitle())
                                 .content(boardDTO.getContent())
                                 .boardType(boardDTO.getBoardType())
+                                .account(account)
+                                .job(job)
                                 .build();
 
-                // boardDTO에서 attachDTO데이터만 attachs로 변경
                 List<Attach> attachs = boardDTO.getAttachList().stream()
-                                .map(attachDTO -> Attach.builder()
-                                                .filePath(attachDTO.getFilePath())
-                                                .fileRealName(attachDTO.getFileRealName())
-                                                .fileChgName(attachDTO.getFileChgName())
-                                                .board(board) // boardId 매칭을 위한 적용
+                                .map(dto -> Attach.builder()
+                                                .filePath(dto.getFilePath())
+                                                .fileRealName(dto.getFileRealName())
+                                                .fileChgName(dto.getFileChgName())
+                                                .board(board)
                                                 .build())
-                                .collect(Collectors.toList());
+                                .toList();
 
-                // board 엔티티에 attachs 적용
                 board.getAttachList().addAll(attachs);
-                // board 엔티티에 attachs.size 적용
                 board.setAttachCount(attachs.size());
 
-                // 게시글 데이터 JPA를 이용하여 DB에 저장
-                // board에 attachs 엔티티가 적용되어 있으므로
-                // board 테이블 insert와 attach 테이블의 insert가
-                // 한 번에 실행됨(JPA 연결 특성으로 인해)
                 boardRepository.save(board);
 
                 return 1;
         }
 
         // 게시글 상세 조회
+        @Transactional(readOnly = true)
         public BoardDTO getBoardById(Long boardId) {
-                // Optional<T> findById(ID id) :
-                // - T : JpaRepository<T, id>에서 T에 설정된 엔티티(Board)
-                // - id : JpaRepository<T, id>에서 id에 설정된 PK(Long boardId)
-                // Optional<Board> : 게시글이 존재하면 Optional안에 Board 객체가 존재
-                // 존재하지 않으면 Optional.empty()
-                // orElseThrow() : Optional안에 Board 객체가 없으면
-                // throw new Exception - exception을 실행
-                Board board = boardRepository.findById(boardId)
-                                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-                return toDTO(board);
+                Board board = boardRepository.findByIdWithAttach(boardId);
+
+                List<AttachDTO> attachDTOList = board.getAttachList() == null
+                                ? new ArrayList<>()
+                                : board.getAttachList().stream()
+                                                .map(attach -> AttachDTO.builder()
+                                                                .attachId(attach.getAttachId())
+                                                                .filePath(attach.getFilePath())
+                                                                .fileRealName(attach.getFileRealName())
+                                                                .fileChgName(attach.getFileChgName())
+                                                                .build())
+                                                .toList();
+
+                return BoardDTO.builder()
+                                .boardId(board.getBoardId())
+                                .jobId(board.getJob().getJobId())
+                                .title(board.getTitle())
+                                .content(board.getContent())
+                                .nickname(board.getAccount().getNickname())
+                                .username(board.getAccount().getUsername())
+                                .viewCount(board.getViewCount())
+                                .likeCount(board.getLikeCount())
+                                .createdAt(board.getCreatedAt())
+                                .attachList(attachDTOList)
+                                .build();
+        }
+
+        public BoardDTO getBoardDetail(Long boardId, String username) {
+
+                Board board = boardRepository.findByIdWithAttach(boardId);
+
+                List<AttachDTO> attachDTOList = board.getAttachList() == null
+                                ? new ArrayList<>()
+                                : board.getAttachList().stream()
+                                                .map(attach -> AttachDTO.builder()
+                                                                .attachId(attach.getAttachId())
+                                                                .filePath(attach.getFilePath())
+                                                                .fileRealName(attach.getFileRealName())
+                                                                .fileChgName(attach.getFileChgName())
+                                                                .build())
+                                                .toList();
+
+                return BoardDTO.builder()
+                                .boardId(board.getBoardId())
+                                .jobId(board.getJob().getJobId())
+                                .title(board.getTitle())
+                                .content(board.getContent())
+                                .nickname(board.getAccount().getNickname())
+                                .username(board.getAccount().getUsername())
+                                .viewCount(board.getViewCount())
+                                .likeCount(board.getLikeCount())
+                                .liked(
+                                                username != null &&
+                                                                boardLikeRepository
+                                                                                .existsByBoardBoardIdAndAccountUsername(
+                                                                                                boardId,
+                                                                                                username))
+                                .createdAt(board.getCreatedAt())
+                                .attachList(attachDTOList)
+                                .build();
+        }
+
+        @Transactional
+        public void increaseViewCount(Long boardId) {
+
+                boardRepository.increaseViewCount(boardId);
+
+        }
+
+        @Transactional
+        public BoardDTO getBoardById(Long boardId,
+                        String username, // 💡 1. 컨트롤러에서 보낸 username을 받습니다.
+                        HttpSession session) {
+
+                String key = "viewed_" + boardId;
+
+                Long lastView = (Long) session.getAttribute(key);
+
+                long now = System.currentTimeMillis();
+
+                // 처음 방문이거나 30분이 지난 경우만 조회수 증가
+                if (lastView == null || now - lastView > 30 * 60 * 1000) {
+
+                        increaseViewCount(boardId);
+
+                        session.setAttribute(key, now);
+                }
+
+                Board board = boardRepository.findByIdWithAttach(boardId);
+                int totalLikeCount = boardLikeService.getLikeCount(boardId);
+
+                // 💡 [여기서 변수가 정상적으로 정의됩니다]
+                List<AttachDTO> attachDTOList = board.getAttachList() == null
+                                ? new ArrayList<>()
+                                : board.getAttachList().stream()
+                                                .map(attach -> AttachDTO.builder()
+                                                                .attachId(attach.getAttachId())
+                                                                .filePath(attach.getFilePath())
+                                                                .fileRealName(attach.getFileRealName())
+                                                                .fileChgName(attach.getFileChgName())
+                                                                .build())
+                                                .toList();
+
+                return BoardDTO.builder()
+                                .boardId(board.getBoardId())
+                                .jobId(board.getJob().getJobId())
+                                .title(board.getTitle())
+                                .content(board.getContent())
+                                .nickname(board.getAccount().getNickname())
+                                .username(board.getAccount().getUsername()) // 유저네임 누락 방지
+                                .viewCount(board.getViewCount())
+                                .likeCount(totalLikeCount)
+
+                                // 🚨 2. 새로고침 시 반영될 추천 여부(liked) 상태값 저장!
+                                .liked(username != null && boardLikeRepository
+                                                .existsByBoardBoardIdAndAccountUsername(boardId, username))
+
+                                .createdAt(board.getCreatedAt())
+                                .attachList(attachDTOList) 
+                                .build();
         }
 
         // 전체 게시글 조회(페이징 처리)
@@ -109,36 +234,42 @@ public class BoardService {
         }
 
         // 게시글 수정
-        public int updateBoard(Long boardId, BoardDTO boardDTO) {
-                // JPA에서 데이터 수정의 경우
-                // 존재하는 데이터를 조회하고
-                // 조회된 데이터의 특정 값을 변경한 후에
-                // 다시 등록하는 방식(update가 없음)
+        public int updateBoard(Long boardId, BoardDTO dto) {
+
                 Board board = boardRepository.findById(boardId)
-                                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
-                board.setTitle(boardDTO.getTitle());
-                board.setContent(boardDTO.getContent());
+                                .orElseThrow();
 
-                // 그 게시글에 포함된 기존 첨부파일 모두 제거
-                board.getAttachList().clear();
-                board.setAttachCount(0);
+                board.setTitle(dto.getTitle());
+                board.setContent(dto.getContent());
 
-                if (boardDTO.getAttachList() != null) {
-                        List<Attach> attachs = boardDTO.getAttachList().stream()
-                                        .map(attachDTO -> Attach.builder()
-                                                        .filePath(attachDTO.getFilePath())
-                                                        .fileRealName(attachDTO.getFileRealName())
-                                                        .fileChgName(attachDTO.getFileChgName())
-                                                        .board(board) // boardId 매칭을 위한 적용
-                                                        .build())
-                                        .collect(Collectors.toList());
-
-                        // attach 테이블에 attach list 데이터 저장
-                        board.getAttachList().addAll(attachs);
-                        board.setAttachCount(attachs.size());
+                // 1. 삭제 처리
+                if (dto.getDeletedImageIds() != null) {
+                        attachRepository.deleteAllById(dto.getDeletedImageIds());
                 }
 
+                // 2. 신규 파일 저장
+                if (dto.getFiles() != null && !dto.getFiles().isEmpty()) {
+
+                        List<Attach> newAttachs = dto.getFiles().stream()
+                                        .map(file -> {
+                                                String savedName = fileStorageService.save(file);
+
+                                                return Attach.builder()
+                                                                .fileRealName(file.getOriginalFilename())
+                                                                .fileChgName(savedName)
+                                                                .filePath("/upload/" + savedName)
+                                                                .board(board)
+                                                                .build();
+                                        })
+                                        .toList();
+
+                        board.getAttachList().addAll(newAttachs);
+                }
+
+                board.setAttachCount(board.getAttachList().size());
+
                 boardRepository.save(board);
+
                 return 1;
         }
 
@@ -164,13 +295,19 @@ public class BoardService {
                                                 .build())
                                 .collect(Collectors.toList());
 
+                int totalLikeCount = boardLikeService.getLikeCount(board.getBoardId());
+
                 return BoardDTO.builder()
                                 .boardId(board.getBoardId())
+                                .jobId(board.getJob().getJobId())
                                 .title(board.getTitle())
-                                .content(board.getContent())
                                 .nickname(board.getAccount().getNickname())
-                                .jobName(board.getJob().getJobName())
-                                .commentCount(board.getComments().size())
+                                .content(board.getContent())
+                                .viewCount(board.getViewCount())
+                                .likeCount(totalLikeCount)
+                                .createdAt(board.getCreatedAt())
+                                .attachCount(board.getAttachCount())
+                                .attachList(attachDTOs)
                                 .build();
         }
 }

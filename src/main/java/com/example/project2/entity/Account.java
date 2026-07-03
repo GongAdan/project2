@@ -51,6 +51,6 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     @Builder.Default
-    private List<PatchNote> patchNotes = new ArrayList<>();
+    private List<BoardLike> boardLikeList = new ArrayList<>();
 
 }

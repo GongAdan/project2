@@ -1,0 +1,468 @@
+/* ===========================
+   Job Header
+=========================== */
+
+.job-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:40px;
+
+    margin-bottom:45px;
+
+    padding:25px 0;
+
+    border-bottom:1px solid #d8dce6;
+}
+
+.job-icon{
+
+    width:170px;
+
+    height:170px;
+
+    flex-shrink:0;
+}
+
+.job-text{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+}
+
+.job-rating{
+
+    color:#3b90ff;
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    margin-bottom:18px;
+}
+
+.job-rating span{
+
+    font-size:20px;
+}
+
+.job-text h1{
+
+    margin:0;
+
+    color:#222;
+
+    font-size:64px;
+
+    font-weight:700;
+}
+
+
+/* ===========================
+   Review
+=========================== */
+
+.review-section{
+
+    margin:50px 0 70px;
+}
+
+.review-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.review-header h2{
+
+    margin:0;
+
+    font-size:30px;
+
+    color:#222;
+}
+
+.review-write-btn{
+
+    padding:12px 26px;
+
+    background:#3b90ff;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    transition:.25s;
+}
+
+.review-write-btn:hover{
+
+    background:#267ae5;
+}
+
+.review-slider{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+}
+
+.review-arrow{
+
+    width:48px;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:white;
+
+    cursor:pointer;
+
+    font-size:22px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+    transition:.25s;
+}
+
+.review-arrow:hover{
+
+    background:#3b90ff;
+
+    color:white;
+}
+
+.review-list{
+
+    flex:1;
+
+    display:flex;
+
+    gap:20px;
+
+    overflow:hidden;
+}
+
+.review-card{
+
+    width:260px;
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:22px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+    transition:.25s;
+}
+
+.review-card:hover{
+
+    transform:translateY(-4px);
+}
+
+.review-user{
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    color:#222;
+}
+
+.review-star{
+
+    margin:12px 0;
+
+    color:#3b90ff;
+
+    font-size:18px;
+}
+
+.review-content{
+
+    color:#555;
+
+    line-height:1.6;
+
+    min-height:90px;
+}
+
+.review-date{
+
+    margin-top:20px;
+
+    color:#999;
+
+    font-size:13px;
+}
+
+
+/* ===========================
+   Board
+=========================== */
+
+.board-section{
+
+    margin-top:20px;
+}
+
+.board-tab{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-bottom:25px;
+}
+
+.board-tab .tab{
+
+    padding:12px 28px;
+
+    border:none;
+
+    background:#d9dde6;
+
+    color:#333;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.board-tab .tab.active{
+
+    background:#3b90ff;
+
+    color:white;
+}
+
+.board-tab .tab:hover{
+
+    background:#3b90ff;
+
+    color:white;
+}
+
+.board-header{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    margin-bottom:18px;
+}
+
+.write-btn{
+
+    padding:10px 24px;
+
+    background:#3b90ff;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:8px;
+
+    font-weight:bold;
+
+    transition:.2s;
+}
+
+.write-btn:hover{
+
+    background:#2578dd;
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:0 3px 15px rgba(0,0,0,.06);
+}
+
+thead{
+
+    background:#f5f7fb;
+}
+
+th{
+
+    padding:18px;
+
+    color:#444;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    text-align:center;
+}
+
+td{
+
+    padding:18px;
+
+    text-align:center;
+
+    color:#333;
+
+    border-top:1px solid #ececec;
+}
+
+td.title{
+
+    text-align:left;
+
+    padding-left:25px;
+}
+
+td.title a{
+
+    color:#222;
+
+    text-decoration:none;
+
+    transition:.2s;
+}
+
+td.title a:hover{
+
+    color:#3b90ff;
+}
+
+tbody tr{
+
+    transition:.2s;
+}
+
+tbody tr:hover{
+
+    background:#f9fbff;
+}
+
+/* 매크로 게시판 전체 컨테이너 및 패들렛 보드 */
+#macroSection {
+    padding: 20px 0;
+}
+#macroBoard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 20px; /* 게시판 헤더 라인과 카드들 사이 여백 */
+}
+
+/* 🎯 플러스 버튼 (기존 글쓰기 버튼 디자인과 일치시킴) */
+.macro-write-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px; /* 기존 write-btn 곡률 기준에 매칭 */
+    padding: 0 15px;
+    height: 38px;       /* 💡 기존 글쓰기 버튼 높이 기준값 강제 동기화 */
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+.macro-write-btn:hover {
+    background-color: #2563eb;
+}
+
+/* 매크로 개별 카드 디자인 */
+.macro-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    width: 220px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+    position: relative;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.macro-commands {
+    font-family: monospace;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    flex-grow: 1;
+}
+
+/* 🎯 매크로 수정/삭제 액션 버튼 영역 */
+.macro-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #f2f2f2;
+    padding-top: 8px;
+}
+.macro-action-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #777;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.macro-action-btn:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+.macro-action-btn.delete:hover {
+    background: #fef2f2;
+    color: #ef4444;
+}

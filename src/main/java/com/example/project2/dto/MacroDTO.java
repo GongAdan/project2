@@ -1,21 +1,15 @@
 package com.example.project2.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class SignalDTO {
-
-    private Long signalId;
-
+public class MacroDTO {
+    private Long macroId;
     private Long jobId;
-
-    private Integer slotNumber;
-
-    private Boolean active;
+    private String title;
+    private String content;
 }

@@ -1,0 +1,406 @@
+/* ===========================
+   Content
+=========================== */
+
+.content {
+    padding: 40px 0;
+}
+
+
+/* ===========================
+   Title
+=========================== */
+
+.board-title {
+    margin: 0;
+    margin-bottom: 25px;
+    color: #222;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+
+/* ===========================
+   Board Info
+=========================== */
+
+.board-info {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 30px;
+    color: #777;
+    font-size: 15px;
+}
+
+.board-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.board-info strong {
+    color: #333;
+    font-weight: 600;
+}
+
+
+/* ===========================
+   Content Body
+=========================== */
+
+.board-content {
+    margin: 40px 0;
+    min-height: 450px;
+    padding: 10px 0;
+    color: #333;
+    font-size: 17px;
+    line-height: 1.9;
+    word-break: break-word;
+}
+
+.board-content img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+
+/* ===========================
+   Buttons
+=========================== */
+
+.button-area {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 50px;
+}
+
+.button-area form {
+    margin: 0;
+}
+
+.list-btn,
+.edit-btn,
+.delete-btn {
+    border: none;
+    padding: 11px 26px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: .2s;
+}
+
+/* 목록 */
+.list-btn {
+    background: #9097a5;
+    color: white;
+}
+
+.list-btn:hover {
+    background: #757d8d;
+}
+
+/* 수정 */
+.edit-btn {
+    background: #3b90ff;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #267ae5;
+}
+
+/* 삭제 */
+.delete-btn {
+    background: #ef5350;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #e53935;
+}
+
+
+/* ===========================
+   Divider
+=========================== */
+
+hr {
+    border: none;
+    border-top: 1px solid #dcdcdc;
+    margin: 0;
+}
+
+
+/* ===========================
+   Selection
+=========================== */
+
+::selection {
+    background: #3b90ff;
+    color: white;
+}
+
+
+/* ===========================
+   게시글 액션 (추천 & 즐겨찾기)
+=========================== */
+
+.board-action {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.favorite-btn,
+.recommend-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 15px;
+    background: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .15);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.favorite-btn:hover,
+.recommend-btn:hover {
+    transform: translateY(-2px);
+}
+
+.favorite-btn:hover {
+    background: #fff4cf;
+}
+
+.recommend-btn:hover {
+    background: #dff0ff;
+}
+
+/* 추천 활성화 되었을 때 스타일 고정 */
+.recommend-btn.active {
+    background: #ffd54f !important;
+    color: #222 !important;
+}
+
+
+/* ===========================
+   댓글
+=========================== */
+
+.comment-section {
+    margin: 45px 0;
+}
+
+.comment-section h2 {
+    color: #222;
+    margin-bottom: 20px;
+}
+
+/* 댓글 작성 */
+.comment-write {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.comment-write textarea {
+    min-height: 120px;
+    padding: 15px;
+    resize: vertical;
+    border: 1px solid #d7dce5;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.comment-write textarea:focus {
+    outline: none;
+    border-color: #3b90ff;
+}
+
+.comment-write button {
+    align-self: flex-end;
+    border: none;
+    background: #3b90ff;
+    color: white;
+    padding: 10px 26px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.comment-write button:hover {
+    background: #267ae5;
+}
+
+/* 댓글 목록 */
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.comment-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    /* 이름/날짜는 왼쪽, 버튼은 오른쪽 배치 */
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.comment-user {
+    font-weight: bold;
+    color: #222;
+}
+
+.comment-date {
+    color: #888;
+    font-size: 13px;
+}
+
+.comment-content {
+    color: #444;
+    line-height: 1.8;
+}
+
+.comment-actions button {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 8px;
+}
+
+.comment-actions button:hover {
+    color: #f1c40f;
+    /* 노란색 포인터 효과 */
+}
+
+.no-comment {
+    color: #888888;       /* 💡 원하는 폰트 색상 (예: 연한 회색) */
+    font-size: 14px;      /* 글자 크기 조정 (선택사항) */
+    text-align: center;   /* 가운데 정렬 (선택사항) */
+    margin: 20px 0;       /* 위아래 여백 (선택사항) */
+}
+
+/* ===========================
+   첨부 이미지
+=========================== */
+
+.attach-image-area {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.attach-image {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+
+
+/* ===========================
+   모달 공통 (삭제 & 로그인 모달 공용)
+=========================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .45);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    width: 360px;
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.modal-box h3 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 18px;
+}
+
+.modal-btns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.modal-btns button {
+    width: 90px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background .2s;
+}
+
+/* [취소/닫기 버튼] - 두 모달의 첫 번째 버튼 공통 */
+.modal-btns button:first-child {
+    background: #ddd;
+    color: #333;
+}
+
+.modal-btns button:first-child:hover {
+    background: #ccc;
+}
+
+/* [삭제 확인 버튼] - ID 기반 개별 스타일 */
+#confirmDelete {
+    background: #ff4d4f;
+    color: white;
+}
+
+#confirmDelete:hover {
+    background: #e03e40;
+}
+
+/* [로그인하러 가기 버튼] - 로그인 모달의 두 번째 버튼 전용 */
+#loginModal .modal-btns button:last-child {
+    background: #3b90ff;
+    color: white;
+}
+
+#loginModal .modal-btns button:last-child:hover {
+    background: #267ae5;
+}

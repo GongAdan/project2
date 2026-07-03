@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{common/head :: commonHead}" />
+    <link rel="stylesheet" th:href="@{/css/registerBoard.css}">
+    <title>공략 작성</title>
+</head>
+
+<body>
+
+    <th:block th:replace="~{common/header :: header}" />
+
+    <main>
+
+        <div class="board-container">
+
+            <h1>공략 작성</h1>
+
+            <form th:action="@{/board/register}" method="post" enctype="multipart/form-data">
+
+                <!-- 직업번호 -->
+                <input type="hidden" name="jobId" th:value="${job.jobId}">
+
+                <!-- 게시판 타입 -->
+                <input type="hidden" name="boardType" value="GUIDE">
+
+                <div class="form-group">
+
+                    <label>제목</label>
+
+                    <input type="text" name="title" placeholder="제목을 입력하세요">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>내용</label>
+
+                    <textarea name="content" rows="15" placeholder="공략 내용을 작성하세요."></textarea>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>첨부파일</label>
+
+                    <input type="file" id="fileInput" name="files" multiple style="display: none;">
+
+                    <button type="button" id="btnFileSelect" class="btn btn-secondary">
+                        첨부파일 추가
+                    </button>
+
+                    <div id="fileListContainer" style="margin-top: 10px;"></div>
+
+                </div>
+
+                <div class="button-group">
+
+                    <button type="submit" class="save-btn">
+                        등록
+                    </button>
+
+                    <a th:href="@{/job/{id}(id=${job.jobId})}" class="cancel-btn">
+                        취소
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <script>
+        const fileInput = document.getElementById("fileInput");
+        const btnFileSelect = document.getElementById("btnFileSelect");
+        const fileListContainer = document.getElementById("fileListContainer");
+
+        if (!fileListContainer) {
+            console.warn("fileListContainer 없음");
+        }
+
+        let fileStore = new DataTransfer();
+
+        // 버튼 클릭 → 파일 선택창 열기
+        btnFileSelect.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        // 파일 선택 시
+        fileInput.addEventListener("change", (e) => {
+            const files = e.target.files;
+
+            for (let file of files) {
+                fileStore.items.add(file);
+            }
+
+            fileInput.files = fileStore.files;
+
+            renderFileList();
+        });
+
+        // 파일 목록 렌더링
+        function renderFileList() {
+            fileListContainer.innerHTML = "";
+
+            Array.from(fileStore.files).forEach((file, index) => {
+
+                const div = document.createElement("div");
+                div.className = "file-item";
+
+                div.innerHTML = `
+            <span>${file.name}</span>
+            <button type="button" onclick="removeFile(${index})">삭제</button>
+        `;
+
+                fileListContainer.appendChild(div);
+            });
+        }
+
+        // 파일 삭제
+        function removeFile(index) {
+            let newStore = new DataTransfer();
+
+            Array.from(fileStore.files)
+                .forEach((file, i) => {
+                    if (i !== index) newStore.items.add(file);
+                });
+
+            fileStore = newStore;
+            fileInput.files = fileStore.files;
+
+            renderFileList();
+        }
+    </script>
+
+</body>
+
+</html>
