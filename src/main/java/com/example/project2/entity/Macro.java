@@ -21,6 +21,8 @@ public class Macro {
 
     private Long jobId;       
     private String title;   
+
+    private String username;
     
     @Column(columnDefinition = "TEXT")
     private String content;   

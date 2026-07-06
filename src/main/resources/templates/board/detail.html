@@ -91,8 +91,13 @@
 
         <div class="board-action">
 
-            <button id="favoriteBtn" class="favorite-btn">
-                ⭐ 즐겨찾기
+            <button id="favoriteBtn" class="favorite-btn" th:classappend="${board.favorited} ? ' active' : ''">
+
+                ⭐
+                <span id="favoriteText" th:text="${board.favorited} ? '즐겨찾기' : '즐겨찾기'">
+                    즐겨찾기
+                </span>
+
             </button>
 
             <button id="likeBtn" class="recommend-btn" th:classappend="${board.liked} ? 'active' : ''">
@@ -294,7 +299,7 @@
 
                 if (data.liked) {
                     btn.classList.add("active");
-                    text.innerText = "추천함";
+                    text.innerText = "추천";
                 } else {
                     btn.classList.remove("active");
                     text.innerText = "추천";
@@ -311,12 +316,55 @@
 
     // ================= [즐겨찾기 버튼 클릭 이벤트] =================
     document.getElementById("favoriteBtn").addEventListener("click", function () {
-        // 💡 여기도 상단 글로벌 변수(isLogin)를 활용합니다!
+
         if (!isLogin) {
             showLoginModal();
             return;
         }
-        // 여기에 즐겨찾기 비동기 요청 코드 작성...
+
+        fetch("/board/favorite", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+
+            body: "boardId=" + boardId
+
+        })
+            .then(res => {
+
+                if (res.status === 401 || res.status === 403) {
+                    showLoginModal();
+                    throw new Error("비로그인 유저");
+                }
+
+                return res.json();
+
+            })
+            .then(data => {
+
+                if (!data) return;
+
+                const btn = document.getElementById("favoriteBtn");
+                const text = document.getElementById("favoriteText");
+
+                if (data.favorited) {
+
+                    btn.classList.add("active");
+                    text.innerText = "즐겨찾기";
+
+                } else {
+
+                    btn.classList.remove("active");
+                    text.innerText = "즐겨찾기";
+
+                }
+
+            })
+            .catch(err => console.warn(err.message));
+
     });
 
     // ================= [댓글 비동기(AJAX) 등록 로직] =================

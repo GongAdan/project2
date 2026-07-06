@@ -1,8 +1,10 @@
 package com.example.project2.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.project2.dto.ReviewDTO;
 import com.example.project2.entity.Account;
@@ -12,76 +14,86 @@ import com.example.project2.repository.AccountRepository;
 import com.example.project2.repository.JobRepository;
 import com.example.project2.repository.ReviewRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
-        private final ReviewRepository reviewRepository;
-        private final JobRepository jobRepository;
-        private final AccountRepository accountRepository;
 
-        @Transactional
+    private final ReviewRepository reviewRepository;
+    private final AccountRepository accountRepository;
+    private final JobRepository jobRepository;
+    
 
-        public void deleteReview(Long reviewId) {
+    // 리뷰 등록
+    public void register(ReviewDTO dto, String username) {
 
-                reviewRepository.deleteById(reviewId);
+        if (dto.getScore() < 1 || dto.getScore() > 5) {
+            throw new IllegalArgumentException("별점은 1~5점입니다.");
         }
 
-        public void saveReview(ReviewDTO dto) {
+        if (reviewRepository.existsByJobJobIdAndAccountUsername(
+                dto.getJobId(),
+                username)) {
 
-                Account account = accountRepository.findById(dto.getAccountId())
-                                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
-
-                Job job = jobRepository.findById(dto.getJobId())
-                                .orElseThrow(() -> new IllegalArgumentException("직업이 존재하지 않습니다."));
-
-                Review review = Review.builder()
-                                .score(dto.getScore())
-                                .content(dto.getContent())
-                                .account(account)
-                                .job(job)
-                                .build();
-
-                reviewRepository.save(review);
+            throw new IllegalStateException("이미 리뷰를 작성했습니다.");
         }
 
-        public List<ReviewDTO> getReviewsByJob(Long jobId) {
+        Account account = accountRepository
+                .findByUsername(username)
+                .orElseThrow();
 
-                return reviewRepository.findByJobJobId(jobId)
-                                .stream()
-                                .map(this::toDTO)
-                                .toList();
-        }
+        Job job = jobRepository
+                .findById(dto.getJobId())
+                .orElseThrow();
 
-        public Double getAverageScore(Long jobId) {
+        Review review = Review.builder()
+                .score(dto.getScore())
+                .content(dto.getContent())
+                .account(account)
+                .job(job)
+                .build();
 
-                List<Review> reviews = reviewRepository.findByJobJobId(jobId);
+        reviewRepository.save(review);
+    }
 
-                return reviews.stream()
-                                .mapToInt(Review::getScore)
-                                .average()
-                                .orElse(0.0);
-        }
+    // 직업별 리뷰 조회
+    @Transactional(readOnly = true)
+    public List<ReviewDTO> getReviews(Long jobId) {
 
-        public Long getReviewCount(Long jobId) {
+        return reviewRepository.findByJobJobId(jobId)
+                .stream()
+                .map(review -> ReviewDTO.builder()
+                        .reviewId(review.getReviewId())
+                        .score(review.getScore())
+                        .content(review.getContent())
+                        .createdAt(review.getCreatedAt())
+                        .updatedAt(review.getUpdatedAt())
+                        .username(review.getAccount().getUsername())
+                        .nickname(review.getAccount().getNickname())
+                        .jobId(review.getJob().getJobId())
+                        .jobName(review.getJob().getJobName())
+                        .build())
+                .collect(Collectors.toList());
 
-                return (long) reviewRepository.findByJobJobId(jobId)
-                                .size();
-        }
+    }
 
-        private ReviewDTO toDTO(Review review) {
+    // 평균 별점
+    @Transactional(readOnly = true)
+    public double getAverageScore(Long jobId) {
 
-                return ReviewDTO.builder()
-                                .reviewId(review.getReviewId())
-                                .score(review.getScore())
-                                .content(review.getContent())
-                                .createdAt(review.getCreatedAt())
-                                .accountId(review.getAccount().getAccountId())
-                                .nickname(review.getAccount().getNickname())
-                                .jobId(review.getJob().getJobId())
-                                .build();
-        }
+        Double avg = reviewRepository.getAverageScore(jobId);
+
+        return avg == null ? 0.0 : avg;
+    }
+
+    // 리뷰 개수
+    @Transactional(readOnly = true)
+    public long getReviewCount(Long jobId) {
+
+        return reviewRepository.countByJobJobId(jobId);
+
+    }
 
 }

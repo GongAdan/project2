@@ -1,6 +1,9 @@
 package com.example.project2.controller;
 
-import org.springframework.stereotype.Controller;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.project2.dto.ReviewDTO;
@@ -8,31 +11,29 @@ import com.example.project2.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
-@RequestMapping("/reviews")
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/review")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
-    // 리뷰 등록
     @PostMapping("/register")
-    public String registerReview(@ModelAttribute ReviewDTO reviewDTO) {
+    public Map<String, Object> register(
+            @RequestBody ReviewDTO dto,
+            Authentication authentication) {
 
-        reviewService.saveReview(reviewDTO);
+        reviewService.register(dto, authentication.getName());
 
-        // 리뷰 작성 후 해당 직업 페이지로 이동
-        return "redirect:/jobs/" + reviewDTO.getJobId();
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("averageScore",
+                reviewService.getAverageScore(dto.getJobId()));
+
+        result.put("reviewCount",
+                reviewService.getReviewCount(dto.getJobId()));
+
+        return result;
     }
 
-    // 리뷰 삭제
-    @PostMapping("/{reviewId}/delete")
-    public String deleteReview(
-            @PathVariable Long reviewId,
-            @RequestParam Long jobId) {
-
-        reviewService.deleteReview(reviewId);
-
-        return "redirect:/jobs/" + jobId;
-    }
 }

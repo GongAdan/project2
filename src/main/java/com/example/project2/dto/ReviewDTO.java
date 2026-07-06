@@ -12,11 +12,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ReviewDTO {
+
     private Long reviewId;
+
+    // 별점 (1~5)
     private Integer score;
+
+    // 한 줄 리뷰
     private String content;
+
+    // 작성일
     private LocalDateTime createdAt;
-    private Long jobId;
-    private Long accountId;  
+
+    // 수정일
+    private LocalDateTime updatedAt;
+
+    // 작성자
+    private String username;
     private String nickname;
+
+    // 직업
+    private Long jobId;
+    private String jobName;
 }

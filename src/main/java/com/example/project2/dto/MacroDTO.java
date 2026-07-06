@@ -12,4 +12,5 @@ public class MacroDTO {
     private Long jobId;
     private String title;
     private String content;
+    private String username;
 }

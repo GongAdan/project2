@@ -32,6 +32,7 @@ public class BoardDTO {
     private String jobName;
     private Integer likeCount;
     private boolean liked;
+    private boolean favorited;
     private Integer commentCount;
     private int attachCount;
     private List<AttachDTO> attaches;

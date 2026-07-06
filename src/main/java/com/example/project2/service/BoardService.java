@@ -19,6 +19,7 @@ import com.example.project2.entity.Board;
 import com.example.project2.entity.Job;
 import com.example.project2.repository.AccountRepository;
 import com.example.project2.repository.AttachRepository;
+import com.example.project2.repository.BoardFavoriteRepository;
 import com.example.project2.repository.BoardRepository;
 import com.example.project2.repository.CommentRepository;
 import com.example.project2.repository.JobRepository;
@@ -38,6 +39,7 @@ public class BoardService {
         private final AttachRepository attachRepository;
         private final FileStorageService fileStorageService;
         private final BoardLikeService boardLikeService;
+        private final BoardFavoriteRepository boardFavoriteRepository;
 
         public Page<BoardDTO> getBoardsByJobAndType(
                         Long jobId,
@@ -142,12 +144,21 @@ public class BoardService {
                                 .username(board.getAccount().getUsername())
                                 .viewCount(board.getViewCount())
                                 .likeCount(board.getLikeCount())
+
                                 .liked(
                                                 username != null &&
                                                                 boardLikeRepository
                                                                                 .existsByBoardBoardIdAndAccountUsername(
                                                                                                 boardId,
                                                                                                 username))
+
+                                .favorited(
+                                                username != null &&
+                                                                boardFavoriteRepository
+                                                                                .existsByBoardBoardIdAndAccountUsername(
+                                                                                                boardId,
+                                                                                                username))
+
                                 .createdAt(board.getCreatedAt())
                                 .attachList(attachDTOList)
                                 .build();
@@ -209,7 +220,7 @@ public class BoardService {
                                                 .existsByBoardBoardIdAndAccountUsername(boardId, username))
 
                                 .createdAt(board.getCreatedAt())
-                                .attachList(attachDTOList) 
+                                .attachList(attachDTOList)
                                 .build();
         }
 
@@ -273,15 +284,20 @@ public class BoardService {
                 return 1;
         }
 
-        // 게시글 삭제 시 댓글 삭제하는 방법
-        // 1. deleteBoard() 메소드처럼 직접 두 개의 테이블에 접근하여 삭제
-        // 2. comment 엔티티에 외래키로 boardId를 설정하고,
-        // CASCADE를 설정하여 부모 테이블 데이터(board)가 삭제되면
-        // 자식도 삭제되도록 구성
+        // 게시글 삭제 
         @Transactional
         public void deleteBoard(Long boardId) {
-                boardRepository.deleteById(boardId);
+                // 즐겨찾기 삭제
+                boardFavoriteRepository.deleteByBoardBoardId(boardId);
+
+                // 추천 삭제
+                boardLikeRepository.deleteByBoardBoardId(boardId);
+
+                // 댓글 삭제
                 commentRepository.deleteByBoardBoardId(boardId);
+
+                // 마지막으로 게시글 삭제
+                boardRepository.deleteById(boardId);
         }
 
         // Board -> BoardDTO 변경 메소드

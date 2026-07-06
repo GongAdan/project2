@@ -189,6 +189,12 @@ hr {
     background: #dff0ff;
 }
 
+/* 즐겨찾기 활성화 */
+.favorite-btn.active {
+    background: #fff4cf !important;
+    color: #222 !important;
+}
+
 /* 추천 활성화 되었을 때 스타일 고정 */
 .recommend-btn.active {
     background: #ffd54f !important;
@@ -300,10 +306,14 @@ hr {
 }
 
 .no-comment {
-    color: #888888;       /* 💡 원하는 폰트 색상 (예: 연한 회색) */
-    font-size: 14px;      /* 글자 크기 조정 (선택사항) */
-    text-align: center;   /* 가운데 정렬 (선택사항) */
-    margin: 20px 0;       /* 위아래 여백 (선택사항) */
+    color: #888888;
+    /* 💡 원하는 폰트 색상 (예: 연한 회색) */
+    font-size: 14px;
+    /* 글자 크기 조정 (선택사항) */
+    text-align: center;
+    /* 가운데 정렬 (선택사항) */
+    margin: 20px 0;
+    /* 위아래 여백 (선택사항) */
 }
 
 /* ===========================

@@ -1,221 +1,156 @@
 /* ===========================
    Job Header
 =========================== */
-
-.job-header{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:40px;
-
-    margin-bottom:45px;
-
-    padding:25px 0;
-
-    border-bottom:1px solid #d8dce6;
+.job-header {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 45px;
+    padding: 25px 0;
+    border-bottom: 1px solid #d8dce6;
 }
 
-.job-icon{
-
-    width:170px;
-
-    height:170px;
-
-    flex-shrink:0;
+.job-header .job-icon {
+    width: 170px;
+    height: 170px;
+    flex-shrink: 0;
 }
 
-.job-text{
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
+.job-header .job-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.job-rating{
-
-    color:#3b90ff;
-
-    font-size:34px;
-
-    font-weight:bold;
-
-    margin-bottom:18px;
+.job-header .job-rating {
+    color: #3b90ff;
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 18px;
 }
 
-.job-rating span{
-
-    font-size:20px;
+.job-header .job-rating span {
+    font-size: 20px;
 }
 
-.job-text h1{
-
-    margin:0;
-
-    color:#222;
-
-    font-size:64px;
-
-    font-weight:700;
+.job-header .job-text h1 {
+    margin: 0;
+    color: #222;
+    font-size: 64px;
+    font-weight: 700;
 }
 
-
-/* ===========================
-   Review
-=========================== */
-
-.review-section{
-
-    margin:50px 0 70px;
+/* 리뷰 섹션 기본 여백 */
+.review-section {
+    margin: 25px 0;
+    width: 100%;
 }
 
-.review-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:25px;
+/* 1. 리뷰 작성 버튼 스타일 (공략 게시판 버튼과 톤앤매너 일치) */
+.review-write-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.2s;
+    margin-bottom: 12px;
 }
 
-.review-header h2{
-
-    margin:0;
-
-    font-size:30px;
-
-    color:#222;
+.review-write-btn:hover {
+    background-color: #2563eb;
 }
 
-.review-write-btn{
-
-    padding:12px 26px;
-
-    background:#3b90ff;
-
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-    transition:.25s;
+/* 2. 최외곽 라인 컨테이너 (여기는 내부 박스가 보여지는 통로 역할만 수행) */
+.review-ticker-container {
+    overflow: hidden;
+    height: 52px; /* 간격 포함 카드 하나가 지나갈 높이 */
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
-.review-write-btn:hover{
-
-    background:#267ae5;
+.review-ticker-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-.review-slider{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:20px;
+/* 3. 전체 박스가 통째로 스크롤되도록 애니메이션 적용 */
+.review-ticker-track {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 카드간 간격 지정 */
+    animation: ticker-vertical 8s linear infinite; /* 속도는 초(8s)로 조절 */
 }
 
-.review-arrow{
-
-    width:48px;
-
-    height:48px;
-
-    border:none;
-
-    border-radius:50%;
-
-    background:white;
-
-    cursor:pointer;
-
-    font-size:22px;
-
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-
-    transition:.25s;
+/* 마우스 호버 시 롤링 멈춤 조절 */
+.review-ticker-container:hover .review-ticker-track {
+    animation-play-state: paused;
 }
 
-.review-arrow:hover{
-
-    background:#3b90ff;
-
-    color:white;
+/* 4. [핵심] 뒷 배경이 비치는 투명도를 가진 가로형 카드 디자인 */
+.review-row-card {
+    display: flex;
+    align-items: center;
+    height: 44px; /* 단독 카드 높이 */
+    padding: 0 20px;
+    box-sizing: border-box;
+    font-size: 14px;
+    gap: 15px;
+    
+    /* 투명도 가미: 흰색 배경에 60% 투명도(0.6) 부여하여 이질감 해소 */
+    background: rgba(255, 255, 255, 0.6); 
+    backdrop-filter: blur(4px); /* 은은하게 뒤를 흐려지게 만드는 고급 효과 */
+    border-radius: 8px;
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
 }
 
-.review-list{
-
-    flex:1;
-
-    display:flex;
-
-    gap:20px;
-
-    overflow:hidden;
+/* 내부 데이터 열 배정 */
+.review-row-card .review-user {
+    font-weight: bold;
+    width: 110px;
+    color: #111827;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.review-card{
-
-    width:260px;
-
-    background:white;
-
-    border-radius:15px;
-
-    padding:22px;
-
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
-
-    transition:.25s;
+.review-row-card .review-star {
+    color: #3b82f6;
+    width: 90px;
+    letter-spacing: -1px;
 }
 
-.review-card:hover{
-
-    transform:translateY(-4px);
+.review-row-card .review-content {
+    flex-grow: 1;
+    color: #374151;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.review-user{
-
-    font-size:17px;
-
-    font-weight:bold;
-
-    color:#222;
+.review-row-card .review-date {
+    color: #9ca3af;
+    font-size: 12px;
+    width: 85px;
+    text-align: right;
 }
 
-.review-star{
-
-    margin:12px 0;
-
-    color:#3b90ff;
-
-    font-size:18px;
-}
-
-.review-content{
-
-    color:#555;
-
-    line-height:1.6;
-
-    min-height:90px;
-}
-
-.review-date{
-
-    margin-top:20px;
-
-    color:#999;
-
-    font-size:13px;
+/* 수직 스크롤 애니메이션 규격 설정 */
+@keyframes ticker-vertical {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        /* 카드 높이(44px) + gap(8px) = 총 52px 단위로 밀려 올라가도록 루프 생성 */
+        transform: translateY(-100%); 
+    }
 }
 
 
@@ -223,192 +158,225 @@
    Board
 =========================== */
 
-.board-section{
+.board-section {
 
-    margin-top:20px;
+    margin-top: 20px;
 }
 
-.board-tab{
+.board-tab {
 
-    display:flex;
+    display: flex;
 
-    gap:12px;
+    gap: 12px;
 
-    margin-bottom:25px;
+    margin-bottom: 25px;
 }
 
-.board-tab .tab{
+.board-tab .tab {
 
-    padding:12px 28px;
+    padding: 12px 28px;
 
-    border:none;
+    border: none;
 
-    background:#d9dde6;
+    background: #d9dde6;
 
-    color:#333;
+    color: #333;
 
-    font-size:15px;
+    font-size: 15px;
 
-    font-weight:bold;
+    font-weight: bold;
 
-    border-radius:10px;
+    border-radius: 10px;
 
-    cursor:pointer;
+    cursor: pointer;
 
-    transition:.2s;
+    transition: .2s;
 }
 
-.board-tab .tab.active{
+.board-tab .tab.active {
 
-    background:#3b90ff;
+    background: #3b90ff;
 
-    color:white;
+    color: white;
 }
 
-.board-tab .tab:hover{
+.board-tab .tab:hover {
 
-    background:#3b90ff;
+    background: #3b90ff;
 
-    color:white;
+    color: white;
 }
 
-.board-header{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    margin-bottom:18px;
+.board-header {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    /* 🎯 내부 버튼들을 세로축 완벽한 정중앙으로 강제 정렬 */
+    height: 44px !important;
+    /* 헤더 박스 전체 높이를 여유 있게 고정 */
+    margin-top: 10px !important;
+    margin-bottom: 25px !important;
+    /* 하단 컨텐츠(테이블/카드)와의 여백 고정 */
+    padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
-.write-btn{
+.write-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    /* 글자를 버튼 박스의 세로 중앙에 배치 */
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    /* 테두리와 패딩을 높이에 포함 */
 
-    padding:10px 24px;
+    height: 40px !important;
+    /* 버튼 물리적 높이 40px 고정 */
+    padding: 0 24px !important;
+    /* 상하 패딩은 0으로 리셋, 좌우 여백만 부여 */
+    margin: 0 !important;
+    /* 기본 마진 오차 리셋 */
 
-    background:#3b90ff;
+    background: #3b90ff;
+    color: white !important;
+    text-decoration: none !important;
+    border: none !important;
+    border-radius: 8px;
 
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:8px;
-
-    font-weight:bold;
-
-    transition:.2s;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1 !important;
+    /* 텍스트 고유의 숨은 행간 여백 초기화 */
+    transition: .2s;
 }
 
-.write-btn:hover{
-
-    background:#2578dd;
+.write-btn:hover {
+    background: #2578dd;
 }
 
-table{
+.macro-write-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    /* '+' 기호를 버튼 박스의 세로 중앙에 배치 */
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    /* 테두리와 패딩을 높이에 포함 */
 
-    width:100%;
+    height: 40px !important;
+    /* 글쓰기 버튼과 완벽하게 일치하는 40px */
+    padding: 0 24px !important;
+    /* 글쓰기 버튼과 완벽하게 일치하는 좌우 여백 */
+    margin: 0 !important;
+    /* 기본 마진 오차 리셋 */
 
-    border-collapse:collapse;
+    background-color: #3b90ff !important;
+    /* 배경색 일치 */
+    color: white !important;
+    border: none !important;
+    /* 버튼 고유의 외곽선 제거 */
+    border-radius: 8px;
+    outline: none !important;
 
-    background:white;
-
-    border-radius:15px;
-
-    overflow:hidden;
-
-    box-shadow:0 3px 15px rgba(0,0,0,.06);
+    /* 🎯 '+' 기호 특성상 미세하게 아래로 처져 보이는 현상을 방지하기 위해 
+       크기를 정교하게 맞추고 내부 정렬을 초기화합니다. */
+    font-size: 20px !important;
+    font-weight: bold;
+    line-height: 1 !important;
+    /* 기호 고유의 숨은 행간 여백 초기화 */
+    cursor: pointer;
+    transition: .2s;
 }
 
-thead{
-
-    background:#f5f7fb;
+.macro-write-btn:hover {
+    background: #2578dd;
 }
 
-th{
+table {
 
-    padding:18px;
+    width: 100%;
 
-    color:#444;
+    border-collapse: collapse;
 
-    font-size:15px;
+    background: white;
 
-    font-weight:700;
+    border-radius: 15px;
 
-    text-align:center;
+    overflow: hidden;
+
+    box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
 }
 
-td{
+thead {
 
-    padding:18px;
-
-    text-align:center;
-
-    color:#333;
-
-    border-top:1px solid #ececec;
+    background: #f5f7fb;
 }
 
-td.title{
+th {
 
-    text-align:left;
+    padding: 18px;
 
-    padding-left:25px;
+    color: #444;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    text-align: center;
 }
 
-td.title a{
+td {
 
-    color:#222;
+    padding: 18px;
 
-    text-decoration:none;
+    text-align: center;
 
-    transition:.2s;
+    color: #333;
+
+    border-top: 1px solid #ececec;
 }
 
-td.title a:hover{
+td.title {
 
-    color:#3b90ff;
+    text-align: left;
+
+    padding-left: 25px;
 }
 
-tbody tr{
+td.title a {
 
-    transition:.2s;
+    color: #222;
+
+    text-decoration: none;
+
+    transition: .2s;
 }
 
-tbody tr:hover{
+td.title a:hover {
 
-    background:#f9fbff;
+    color: #3b90ff;
+}
+
+tbody tr {
+
+    transition: .2s;
+}
+
+tbody tr:hover {
+
+    background: #f9fbff;
 }
 
 /* 매크로 게시판 전체 컨테이너 및 패들렛 보드 */
 #macroSection {
-    padding: 20px 0;
+    padding: 0;
 }
+
 #macroBoard {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     align-items: flex-start;
-    margin-top: 20px; /* 게시판 헤더 라인과 카드들 사이 여백 */
-}
-
-/* 🎯 플러스 버튼 (기존 글쓰기 버튼 디자인과 일치시킴) */
-.macro-write-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 4px; /* 기존 write-btn 곡률 기준에 매칭 */
-    padding: 0 15px;
-    height: 38px;       /* 💡 기존 글쓰기 버튼 높이 기준값 강제 동기화 */
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background-color 0.2s;
-}
-.macro-write-btn:hover {
-    background-color: #2563eb;
+    margin-top: 20px;
+    /* 게시판 헤더 라인과 카드들 사이 여백 */
 }
 
 /* 매크로 개별 카드 디자인 */
@@ -417,7 +385,7 @@ tbody tr:hover{
     border-radius: 16px;
     padding: 20px;
     width: 220px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border: 1px solid #f0f0f0;
     position: relative;
     min-height: 150px;
@@ -448,6 +416,7 @@ tbody tr:hover{
     border-top: 1px solid #f2f2f2;
     padding-top: 8px;
 }
+
 .macro-action-btn {
     background: none;
     border: none;
@@ -458,11 +427,93 @@ tbody tr:hover{
     border-radius: 4px;
     transition: all 0.2s;
 }
+
 .macro-action-btn:hover {
     background: #f5f5f5;
     color: #333;
 }
+
 .macro-action-btn.delete:hover {
     background: #fef2f2;
     color: #ef4444;
+}
+
+/* ===========================
+   모달 공통 (삭제 & 로그인 모달 공용)
+=========================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .45);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    width: 360px;
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+.modal-box h3 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 18px;
+}
+
+.modal-btns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.modal-btns button {
+    width: 90px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background .2s;
+}
+
+/* [취소/닫기 버튼] - 두 모달의 첫 번째 버튼 공통 */
+.modal-btns button:first-child {
+    background: #ddd;
+    color: #333;
+}
+
+.modal-btns button:first-child:hover {
+    background: #ccc;
+}
+
+/* [삭제 확인 버튼] - ID 기반 개별 스타일 */
+#confirmDelete {
+    background: #ff4d4f;
+    color: white;
+}
+
+#confirmDelete:hover {
+    background: #e03e40;
+}
+
+/* [로그인하러 가기 버튼] - 로그인 모달의 두 번째 버튼 전용 */
+#loginModal .modal-btns button:last-child {
+    background: #3b90ff;
+    color: white;
+}
+
+#loginModal .modal-btns button:last-child:hover {
+    background: #267ae5;
 }
