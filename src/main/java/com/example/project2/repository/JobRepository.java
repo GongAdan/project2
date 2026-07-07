@@ -11,5 +11,7 @@ import com.example.project2.entity.Job;
 public interface JobRepository extends JpaRepository<Job, Long> {
 
     List<Job> findByRoleOrderByDisplayOrder(JobRole role);
+
+    List<Job> findByRole(JobRole role);
     
 }

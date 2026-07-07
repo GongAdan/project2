@@ -1,9 +1,12 @@
 <header>
     <div class="header-container">
 
-        <a class="logo" th:href="@{/}">
-            CrystallineConflict
-        </a>
+        <div class="logo-group">
+            <a class="logo" th:href="@{/}">
+                CrystallineConflict
+            </a>
+            <div class="sub-title">비공식 공략 커뮤니티</div>
+        </div>
 
         <div class="header-section">
             <div sec:authorize="isAnonymous()" class="auth-links">

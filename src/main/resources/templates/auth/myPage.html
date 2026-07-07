@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{common/head :: commonHead}"></th:block>
+    <title>myPage</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body>
+
+    <th:block th:replace="~{common/header :: header}"></th:block>
+
+<div class="mypage-container">
+    <h2>마이페이지</h2>
+
+    <section class="user-info-section">
+        <h3>내 정보 관리</h3>
+        <form id="update-user-form">
+            <p>아이디: <span id="user-id">testUser123</span> (아이디는 수정 불가)</p>
+            <p>
+                닉네임: <input type="text" id="user-nickname" value="기존닉네임">
+                <button type="button" onclick="updateNickname()">닉네임 수정</button>
+            </p>
+            <p>
+                비밀번호: <input type="password" id="user-password" placeholder="새 비밀번호 입력">
+                <button type="button" onclick="updatePassword()">비밀번호 변경</button>
+            </p>
+        </form>
+        <button type="button" class="btn-delete-account" onclick="withdrawAccount()">회원 탈퇴</button>
+    </section>
+
+    <hr>
+
+    <section class="user-activity-section">
+        <h3>내 활동 내역</h3>
+        
+        <div id="my-posts">
+            <h4>작성한 게시글</h4>
+            <ul id="post-list">
+                </ul>
+        </div>
+
+        <div id="my-reviews">
+            <h4>작성한 리뷰</h4>
+            <ul id="review-list">
+                </ul>
+        </div>
+
+        <div id="my-favorites">
+            <h4>즐겨찾기</h4>
+            <ul id="favorite-list">
+                </ul>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

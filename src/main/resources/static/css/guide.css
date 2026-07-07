@@ -40,117 +40,170 @@
     font-weight: 700;
 }
 
-/* 리뷰 섹션 기본 여백 */
+/* 리뷰 섹션 전체 배치 */
 .review-section {
-    margin: 25px 0;
+    margin: 30px 0;
     width: 100%;
 }
 
-/* 1. 리뷰 작성 버튼 스타일 (공략 게시판 버튼과 톤앤매너 일치) */
+/* 등록된 리뷰가 없을 때 나타나는 안내 문구 스타일 */
+.review-empty {
+    color: #888;
+    /* 보내주신 매크로 양식 색상 */
+    margin: 30px auto;
+    /* 상하 여백 부여 및 가로 중앙 정렬 */
+    text-align: center;
+    /* 텍스트 내용물 중앙 정렬 */
+    font-size: 16px;
+    width: 100%;
+
+    /* 슬라이더 카드들과 톤을 맞추기 위해 반투명 라인 추가 (선택사항) */
+    padding: 20px 0;
+    border-top: 1px dashed rgba(229, 231, 235, 0.5);
+    border-bottom: 1px dashed rgba(229, 231, 235, 0.5);
+}
+
 .review-write-btn {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+
+    /* write-btn과 크기 및 규격 완전 일치 */
+    height: 40px !important;
+    padding: 0 24px !important;
+    margin: 0 0 12px 0 !important;
+    /* 아래 여백 12px만 유지 */
+
+    background: #3b90ff;
+    color: white !important;
+    text-decoration: none !important;
+    border: none !important;
+    border-radius: 8px;
+    /* 라운드 통일 */
+
     font-weight: bold;
-    transition: background 0.2s;
-    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1 !important;
+    cursor: pointer;
+    transition: .2s;
 }
 
 .review-write-btn:hover {
-    background-color: #2563eb;
+    background: #2578dd;
 }
 
-/* 2. 최외곽 라인 컨테이너 (여기는 내부 박스가 보여지는 통로 역할만 수행) */
-.review-ticker-container {
-    overflow: hidden;
-    height: 52px; /* 간격 포함 카드 하나가 지나갈 높이 */
+/* 슬라이더 전체 컨테이너 (화살표 정렬을 위해 relative 설정) */
+.review-carousel-container {
     position: relative;
+    width: 100%;
     display: flex;
     align-items: center;
-    width: 100%;
 }
 
-.review-ticker-wrapper {
+/* 카드가 보일 윈도우 창 (감싸는 배경박스 없이 투명하게 처리) */
+.review-carousel-viewport {
+    overflow: hidden;
+    width: 100%;
+    padding: 10px 0;
+    /* 카드 섀도우가 잘리지 않게 위아래 여백 */
+}
+
+/* 카드가 가로로 나열될 트랙 */
+.review-carousel-track {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.4s ease-in-out;
+    width: max-content;
+}
+
+.review-game-card {
     display: flex;
     flex-direction: column;
-    width: 100%;
-}
-
-/* 3. 전체 박스가 통째로 스크롤되도록 애니메이션 적용 */
-.review-ticker-track {
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* 카드간 간격 지정 */
-    animation: ticker-vertical 8s linear infinite; /* 속도는 초(8s)로 조절 */
-}
-
-/* 마우스 호버 시 롤링 멈춤 조절 */
-.review-ticker-container:hover .review-ticker-track {
-    animation-play-state: paused;
-}
-
-/* 4. [핵심] 뒷 배경이 비치는 투명도를 가진 가로형 카드 디자인 */
-.review-row-card {
-    display: flex;
-    align-items: center;
-    height: 44px; /* 단독 카드 높이 */
-    padding: 0 20px;
+    /* 요소를 위에서 아래로 정렬 */
+    width: 250px;
+    /* 아바타가 빠졌으니 가로를 살짝 슬림하게 조절 */
+    height: 110px;
+    padding: 14px 18px;
     box-sizing: border-box;
-    font-size: 14px;
-    gap: 15px;
-    
-    /* 투명도 가미: 흰색 배경에 60% 투명도(0.6) 부여하여 이질감 해소 */
-    background: rgba(255, 255, 255, 0.6); 
-    backdrop-filter: blur(4px); /* 은은하게 뒤를 흐려지게 만드는 고급 효과 */
-    border-radius: 8px;
-    border: 1px solid rgba(229, 231, 235, 0.5);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    border: 1px solid rgba(229, 231, 235, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-/* 내부 데이터 열 배정 */
-.review-row-card .review-user {
+/* 카드 내부 텍스트 정렬 */
+.review-game-card .card-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.review-game-card .review-user {
     font-weight: bold;
-    width: 110px;
-    color: #111827;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 14px;
+    color: #1f2937;
 }
 
-.review-row-card .review-star {
+.review-game-card .review-star {
     color: #3b82f6;
-    width: 90px;
-    letter-spacing: -1px;
+    font-size: 12px;
+    margin-top: -2px;
 }
 
-.review-row-card .review-content {
-    flex-grow: 1;
-    color: #374151;
+.review-game-card .review-content {
+    font-size: 13px;
+    color: #4b5563;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin: 4px 0;
 }
 
-.review-row-card .review-date {
+.review-game-card .review-date {
+    font-size: 11px;
     color: #9ca3af;
-    font-size: 12px;
-    width: 85px;
-    text-align: right;
 }
 
-/* 수직 스크롤 애니메이션 규격 설정 */
-@keyframes ticker-vertical {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        /* 카드 높이(44px) + gap(8px) = 총 52px 단위로 밀려 올라가도록 루프 생성 */
-        transform: translateY(-100%); 
-    }
+/* 💡 동그라미 없는 투명 화살표 기호 디자인 */
+.slide-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 28px;
+    /* 기호 크기 */
+    color: #9ca3af;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    /* 평소에는 완전히 투명하게 숨김 */
+    transition: opacity 0.2s ease, color 0.2s;
+    padding: 10px;
+}
+
+.slide-arrow:hover {
+    color: #3b82f6;
+    /* 화살표에 마우스 대면 파랗게 강조 */
+}
+
+.slide-arrow.left {
+    left: -35px;
+}
+
+.slide-arrow.right {
+    right: -35px;
+}
+
+/* 💡 전체 슬라이더 영역에 마우스를 올렸을 때만 화살표를 나타나게 처리 */
+.review-carousel-container:hover .slide-arrow {
+    opacity: 1;
 }
 
 
@@ -163,40 +216,72 @@
     margin-top: 20px;
 }
 
+
+.board-empty {
+    color: #888;
+    /* 요청하신 매크로 색상 양식 */
+    margin: 20px auto;
+    /* 게시판 내부 여백 고려하여 상하 40px 부여 */
+    text-align: center;
+    /* 텍스트 정중앙 배치 */
+    font-size: 16px;
+    width: 100%;
+
+    /* 위아래 구분선으로 게시판 테이블 경계 느낌 구현 */
+    padding: 20px 0;
+    border-top: 1px solid rgba(229, 231, 235, 0.5);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.macro-empty {
+    display: block !important;
+    color: #888;
+    margin: 20px auto;
+    text-align: center;
+    /* 텍스트 완전 중앙 정렬 */
+    font-size: 16px;
+    width: 100% !important;
+    /* 가로 공간 100% 강제 확보 */
+    box-sizing: border-box;
+
+    padding: 20px 0;
+    border-top: 1px solid rgba(229, 231, 235, 0.5);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+}
+
 .board-tab {
-
     display: flex;
-
     gap: 12px;
-
     margin-bottom: 25px;
 }
 
 .board-tab .tab {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
 
-    padding: 12px 28px;
+    /* 패딩 대신 물리적 높이 40px 고정 및 좌우 여백 적용 */
+    height: 40px !important;
+    padding: 0 24px !important;
+    margin: 0 !important;
 
-    border: none;
-
+    border: none !important;
     background: #d9dde6;
-
     color: #333;
 
-    font-size: 15px;
-
+    /* 폰트 크기 및 라운딩 스타일 통일 */
+    font-size: 14px;
     font-weight: bold;
-
-    border-radius: 10px;
+    line-height: 1 !important;
+    border-radius: 8px;
 
     cursor: pointer;
-
     transition: .2s;
 }
 
 .board-tab .tab.active {
-
     background: #3b90ff;
-
     color: white;
 }
 
@@ -368,6 +453,11 @@ tbody tr:hover {
 /* 매크로 게시판 전체 컨테이너 및 패들렛 보드 */
 #macroSection {
     padding: 0;
+}
+
+#macroBoard.empty-parent {
+    display: block !important;
+    width: 100% !important;
 }
 
 #macroBoard {

@@ -15,4 +15,6 @@ public interface SignalRepository extends JpaRepository<Signal, Long> {
 
     long countByJobJobIdAndActiveTrue(Long jobId);
 
+    List<Signal> findByActiveTrue();
+
 }

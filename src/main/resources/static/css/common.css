@@ -15,14 +15,41 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 0; /* 원래의 시원한 패딩 유지 */
+    padding: 40px 0;
+    /* 원래의 시원한 패딩 유지 */
+}
+
+/* 로고와 서브 타이틀을 감싸는 부모 그룹 */
+.logo-group {
+    display: flex;
+    flex-direction: column;
+
+    /* 💡 [수정] 자식 요소들(로고, 서브타이틀)을 오른쪽(우측) 끝으로 정렬합니다 */
+    align-items: flex-end;
+
+    gap: 1px;
+    /* 로고와 아래 문구 사이의 간격 */
 }
 
 .logo {
-    font-size: 52px; /* 원래의 큰 로고 크기 유지 */
+    font-size: 52px;
+    /* 원래의 큰 로고 크기 유지 */
     font-weight: bold;
     color: rgb(59, 144, 255);
     text-decoration: none;
+    line-height: 0.7;
+    /* 문구와 겹치지 않도록 행간 조절 */
+}
+
+/* 서브 타이틀 문구 스타일 */
+.sub-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(59, 144, 255);
+
+    /* 💡 [수정] 기존의 padding-left를 제거하고, 오른쪽 끝 라인 밀착 오차를 맞추기 위한 여백 부여 */
+    padding-left: 0;
+    padding-right: 2px;
 }
 
 .header-section {
@@ -36,7 +63,8 @@ header {
 .auth-links {
     display: flex;
     align-items: center;
-    gap: 40px; /* 원래의 40px 간격 유지 */
+    gap: 40px;
+    /* 원래의 40px 간격 유지 */
 }
 
 .header-section a {
@@ -56,7 +84,8 @@ header {
 .user-menu {
     display: flex;
     align-items: center;
-    gap: 15px; /* 닉네임 -> 마이페이지 -> 로그아웃 사이의 간격 */
+    gap: 15px;
+    /* 닉네임 -> 마이페이지 -> 로그아웃 사이의 간격 */
 }
 
 .user-menu .user-nickname {
@@ -67,7 +96,8 @@ header {
 .logout-form {
     display: flex;
     align-items: center;
-    margin: 0; /* form 기본 여백 제거 */
+    margin: 0;
+    /* form 기본 여백 제거 */
 }
 
 /* ===================================================
@@ -76,14 +106,15 @@ header {
 .header-btn {
     border: none;
     background: #3b90ff;
-    color: white;
+    color: white !important;
+    /* 💡 기존 일반 링크의 #333(검은색)을 이기도록 !important 추가 */
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
     font-size: 14px;
     font-family: Arial;
-    text-decoration: none; /* 마이페이지 a 태그 밑줄 제거 */
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     transition: .2s;
@@ -91,14 +122,24 @@ header {
 
 .header-btn:hover {
     background: #2d7de5;
+    color: white !important;
+    /* 💡 마우스 올렸을 때도 하얀색 유지 */
 }
 
-/* 로그아웃 버튼만 포인트를 주고 싶다면 빨간색 적용 (선택 사항, 싫으시면 지우셔도 됩니다) */
+/* 마이페이지 버튼에 명확하게 한 번 더 지정해주면 확실합니다 */
+.mypage-btn {
+    color: white !important;
+}
+
+/* 로그아웃 버튼 (기존 유지) */
 .logout-btn {
     background: #ef5350;
+    color: white !important;
 }
+
 .logout-btn:hover {
     background: #e53935;
+    color: white !important;
 }
 
 /* =================================================== */

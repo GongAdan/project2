@@ -13,7 +13,7 @@
     margin-bottom: 25px;
 }
 
-.tab {
+.patch {
 
     padding: 0;
 
@@ -32,14 +32,80 @@
     transition: .2s;
 }
 
-.tab:hover {
+.patch:hover {
 
     color: rgb(59, 144, 255);
 }
 
-.tab.active {
+.patch.active {
 
     color: rgb(59, 144, 255);
+}
+
+.guide {
+
+    padding: 0;
+
+    margin: 0;
+
+    border: none;
+
+    background: none;
+
+    color: rgb(34, 30, 43);
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+    transition: .2s;
+}
+
+.guide:hover {
+
+    color: rgb(59, 144, 255);
+}
+
+.guide.active {
+
+    color: rgb(59, 144, 255);
+}
+
+.signal {
+
+    padding: 0;
+
+    margin: 0;
+
+    border: none;
+
+    background: none;
+
+    color: rgb(34, 30, 43);
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+    transition: .2s;
+}
+
+.signal:hover {
+
+    color: rgb(59, 144, 255);
+}
+
+.signal.active {
+
+    color: rgb(59, 144, 255);
+}
+
+.signal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* 내부 요소들을 무조건 왼쪽 정렬 */
+    width: 100%;
 }
 
 .menu a {
@@ -112,4 +178,431 @@
     width: 90px;
     height: 90px;
     transition: 0.3s;
+}
+
+/* ==========================================
+   FF14 임무 찾기 스타일 (신호기 전용)
+   ========================================== */
+.ff14-duty-finder {
+    display: flex;
+    justify-content: flex-start;
+    /* 왼쪽부터 배치 */
+
+    /* 💡 핵심: 두 패널의 세로 높이를 강제로 똑같이 맞춥니다. */
+    align-items: stretch;
+
+    gap: 30px;
+    /* 두 창 사이의 좌우 간격 */
+    width: 100%;
+
+    /* 💡 높이 간격 유지: HTML 내부의 <br> 규칙을 그대로 따르도록 상단 마진을 0으로 유지합니다. */
+    margin-top: 0px;
+    margin-bottom: 25px;
+    /* 하단 맵 정보와의 간격 */
+}
+
+/* 왼쪽 패널 (임무 찾기 창) */
+.df-left-panel {
+    width: 500px;
+    background: #2b2622;
+    border: 2px solid #52473e;
+    border-radius: 4px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 5px 15px rgba(0, 0, 0, 0.5);
+    color: #e3d3c2;
+
+    display: flex;
+    flex-direction: column;
+
+    /* 💡 추가: 부모(.ff14-duty-finder)의 stretch 신호를 받아 고정 높이를 해제하고 
+       오른쪽 창 높이만큼 아래로 꽉 차게 늘어나도록 설정합니다. */
+    height: auto;
+    flex-grow: 1;
+
+    /* 내부 요소(헤더, 바디, 푸터)들이 늘어난 높이 안에서 위아래로 알맞게 정렬되도록 합니다. */
+    justify-content: space-between;
+}
+
+.df-header {
+    background: #1c1815;
+    padding: 12px 20px;
+    border-bottom: 2px solid #52473e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.df-title {
+    font-weight: bold;
+    color: #e3d3c2;
+    font-size: 16px;
+}
+
+.df-subtitle {
+    font-size: 13px;
+    color: #ce403a;
+    /* 빨간색 직업 선택창 글씨 적용 */
+}
+
+.df-body {
+    padding: 20px;
+    flex: 1;
+}
+
+/* 직업 표시 헤더 상자 */
+.df-job-display {
+    border: 1px solid #c92c22;
+    /* 예시 화면의 강렬한 빨간 테두리 */
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.df-level {
+    font-size: 12px;
+    color: #a6927e;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.df-job-name-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.df-icon-placeholder {
+    font-size: 18px;
+}
+
+.select-wrapper {
+    flex: 1;
+}
+
+.df-select {
+    width: 100%;
+    background: #111;
+    border: 1px solid #52473e;
+    color: #fff;
+    padding: 6px;
+    outline: none;
+}
+
+.df-selected-job-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #f7bd42;
+}
+
+.df-role-tag {
+    font-size: 12px;
+    color: #a6927e;
+    text-align: right;
+}
+
+.df-role-tag .badge {
+    background: #5c1816;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* 무작위 임무 리스트 데코 */
+.df-mission-list {
+    border: 1px solid #4a3f35;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.df-mission-header {
+    background: #211d1a;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #4a3f35;
+    color: #ceb39a;
+}
+
+.df-mission-item {
+    padding: 10px 12px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 하단 푸터 및 버튼 시스템 */
+.df-footer {
+    background: #1c1815;
+    padding: 15px 20px;
+    border-top: 2px solid #52473e;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.df-count-info {
+    font-size: 12px;
+}
+
+.count-title {
+    color: #c92c22;
+    margin: 0 0 4px 0;
+}
+
+.count-value {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    color: #fff;
+}
+
+.count-desc {
+    color: #8c7e72;
+    margin: 0;
+}
+
+.df-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.df-btn {
+    background: #403730;
+    border: 1px solid #6b5c51;
+    color: #e3d3c2;
+    padding: 8px 24px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.df-btn:hover:not(:disabled) {
+    background: #52473e;
+}
+
+.df-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.df-btn.btn-submit {
+    background: #54595f;
+    border-color: #797f85;
+}
+
+.df-btn.btn-submit:hover:not(:disabled) {
+    background: #686e75;
+}
+
+/* 신호기 켜진 상태 버튼 상태 */
+.active-signal {
+    background: #2b593f !important;
+    color: #6effaa !important;
+    border-color: #3f855c !important;
+}
+
+
+/* ==========================================
+   오른쪽 패널 (크리스탈 액자 프레임)
+   ========================================== */
+.df-right-panel {
+    width: 460px;
+    background: #f7ebd9;
+    /* 목재/종이 느낌의 연한 베이지색 안감 */
+    border: 4px double #b08d57;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cc-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #d4c4af;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.cc-badge {
+    background: #333;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.cc-title {
+    font-weight: bold;
+    font-size: 15px;
+    color: #4a3b2c;
+}
+
+/* 크리스탈 드로잉 아트보드 */
+.cc-crystal-area {
+    width: 90%;
+    height: 220px;
+    border: 2px solid #c43325;
+    background: #fcf6ed;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.crystal-shape {
+    width: 70px;
+    height: 120px;
+    background: #9addf5;
+    clip-path: polygon(50% 0%, 100% 35%, 100% 65%, 50% 100%, 0% 65%, 0% 35%);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.8);
+    border-bottom: 4px solid #f2df52;
+    /* 이미지 하단 노란 거 거치대 형상화 */
+}
+
+.crystal-text {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #c43325;
+    font-weight: bold;
+}
+
+/* 매칭 현황판 슬롯 도트 시스템 */
+.cc-status-board {
+    width: 100%;
+    text-align: center;
+}
+
+.cc-slots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.user-job-tag {
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 1px 5px;
+    color: #666;
+    margin-right: 4px;
+}
+
+.slot-dot {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #2ed573;
+    border-radius: 50%;
+    background: transparent;
+    display: inline-block;
+}
+
+.slot-dot.filled {
+    background: #2ed573;
+    /* 매칭 들어가면 채워지는 도트 */
+}
+
+.cc-match-msg {
+    font-weight: bold;
+    font-size: 14px;
+    color: #777;
+}
+
+.cc-match-msg.matching {
+    color: #c43325;
+    animation: flashText 1.5s infinite;
+}
+
+@keyframes flashText {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* 직업 아이콘 스타일 */
+.df-job-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+/* 툴팁을 위한 상위 컨테이너 가상 배치 */
+.slot-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* 기본 상태에서는 숨겨둘 툴팁 상자 디자인 */
+.slot-tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: 125%;
+    /* 점 위에 배치 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(28, 24, 21, 0.95);
+    /* FF14 특유의 어두운 메탈 그레이 */
+    color: #e3d3c2;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #52473e;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* 점(slot-dot)에 마우스를 올리면 툴팁 출현 */
+.slot-container:hover .slot-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.main-container {
+    max-width: 1200px;
+    /* 상단 네비게이션바/로고 컨테이너의 가로 크기와 맞춰주세요 */
+    margin: 0 auto;
+    /* 화면 중앙에 배치하여 왼쪽 라인을 일치시킵니다 */
+    padding: 0 20px;
+    width: 100%;
+}
+
+.map-info-section {
+    text-align: left;
+    /* 텍스트 왼쪽 정렬 */
+    font-size: 16px;
+    /* 가독성 좋은 글자 크기 */
+    color: #111111;
+    /* 텍스트 선명하게 조정 */
+    line-height: 1.7;
+    /* 줄간격 여유 부여 */
+    margin-top: 10px;
+    /* 위 패널과의 거리 */
+}
+
+.map-info-section p {
+    margin: 4px 0;
+    /* 행간 좁혀서 깔끔하게 출력 */
+    font-weight: bold;
+    /* 스크린샷처럼 굵게 표현 */
 }

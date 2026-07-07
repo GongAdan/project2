@@ -42,43 +42,34 @@
                 </button>
             </div>
 
-            <div class="review-ticker-container" th:if="${!#lists.isEmpty(reviews)}">
-                <div class="review-ticker-wrapper">
+            <div class="review-carousel-container" th:if="${!#lists.isEmpty(reviews)}">
+                <button type="button" class="slide-arrow left" onclick="moveSlide(-1)">&lt;</button>
 
-                    <div class="review-ticker-track">
-                        <div class="review-row-card" th:each="review : ${reviews}">
-                            <span class="review-user" th:text="${review.nickname}"></span>
-                            <span class="review-star">
-                                <span th:each="i : ${#numbers.sequence(1,5)}"
-                                    th:text="${i <= review.score} ? '★' : '☆'"></span>
-                            </span>
-                            <span class="review-content" th:text="${review.content}"></span>
-                            <span class="review-date"
-                                th:text="${#temporals.format(review.createdAt,'yyyy-MM-dd')}"></span>
+                <div class="review-carousel-viewport">
+                    <div class="review-carousel-track" id="reviewTrack">
+                        <div class="review-game-card" th:each="review : ${reviews}">
+                            <div class="card-info">
+                                <div class="review-user" th:text="${review.nickname}"></div>
+                                <div class="review-star">
+                                    <span th:each="i : ${#numbers.sequence(1,5)}"
+                                        th:text="${i <= review.score} ? '★' : '☆'"></span>
+                                </div>
+                                <div class="review-content" th:text="${review.content}"></div>
+                                <div class="review-date" th:text="${#temporals.format(review.createdAt,'yyyy-MM-dd')}">
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="review-ticker-track">
-                        <div class="review-row-card" th:each="review : ${reviews}">
-                            <span class="review-user" th:text="${review.nickname}"></span>
-                            <span class="review-star">
-                                <span th:each="i : ${#numbers.sequence(1,5)}"
-                                    th:text="${i <= review.score} ? '★' : '☆'"></span>
-                            </span>
-                            <span class="review-content" th:text="${review.content}"></span>
-                            <span class="review-date"
-                                th:text="${#temporals.format(review.createdAt,'yyyy-MM-dd')}"></span>
-                        </div>
-                    </div>
-
                 </div>
+
+                <button type="button" class="slide-arrow right" onclick="moveSlide(1)">&gt;</button>
             </div>
 
             <div class="review-empty" th:if="${#lists.isEmpty(reviews)}">
-                아직 작성된 리뷰가 없습니다.
+                등록된 리뷰가 없습니다.
             </div>
-        </section>
 
+        </section>
 
         <div class="board-section">
 
@@ -95,7 +86,7 @@
                         th:onclick="handleWriteClick([[${job.jobId}]])">글쓰기</a>
                 </div>
 
-                <table class="board-table">
+                <table class="board-table" th:if="${guideList != null and guideList.hasContent()}">
                     <thead>
                         <tr>
                             <th width="8%">번호</th>
@@ -119,6 +110,11 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="board-empty" th:if="${guideList == null or guideList.empty}">
+                    등록된 게시글이 없습니다.
+                </div>
+
             </div>
 
             <div id="macroSection" class="tab-content" style="display: none;">
@@ -126,7 +122,68 @@
                     <button type="button" id="openMacroModalBtn" class="macro-write-btn">+</button>
                 </div>
 
-                <div id="macroBoard">
+                <div id="macroBoard" th:classappend="${macroList == null or macroList.empty} ? 'empty-parent' : ''"
+                    style="display: flex; flex-wrap: wrap; gap: 20px;">
+
+                    <div class="macro-card" th:if="${macroList != null and macroList.hasContent()}"
+                        th:each="macro, iterStat : ${macroList.content}"
+                        style="background: white; border-radius: 16px; padding: 20px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+
+                        <th:block
+                            th:with="isOwner=${#authentication.name != 'anonymousUser' and #authentication.name == macro.username}">
+
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
+                                <h4 th:id="'title-' + ${macro.macroId}" th:data-title="${macro.title}"
+                                    th:text="${macro.title}"
+                                    style="margin: 0; font-size: 16px; font-weight: bold; color: #1a1a1a; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                </h4>
+
+                                <div style="position: relative;">
+                                    <button type="button"
+                                        th:onclick="'toggleDropdown(event, ' + ${iterStat.index} + ')'"
+                                        style="background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #999;">⋮</button>
+
+                                    <div th:id="'dropdown-' + ${iterStat.index}" class="macro-dropdown"
+                                        style="display: none; position: absolute; top: 25px; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; min-width: 80px;">
+
+                                        <button type="button"
+                                            th:onclick="'handleEdit(\'' + ${macro.macroId} + '\', ' + ${isOwner} + ')'"
+                                            th:style="'display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: #333;' + (${!isOwner} ? 'opacity: 0.5; cursor: not-allowed;' : '')">수정</button>
+
+                                        <button type="button"
+                                            th:onclick="'handleDelete(\'' + ${macro.macroId} + '\', ' + ${isOwner} + ')'"
+                                            th:style="'display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: red; border-top: 1px solid #f0f0f0;' + (${!isOwner} ? 'opacity: 0.5; cursor: not-allowed;' : '')">삭제</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; justify-content: space-between; position: relative;">
+                                <div th:id="'content-' + ${macro.macroId}" th:data-content="${macro.content}"
+                                    th:text="${macro.content}" class="macro-commands"
+                                    style="font-family: monospace; font-size: 13px; color: #333; line-height: 1.6; white-space: pre-wrap; background: #fafafa; padding: 10px; padding-bottom: 35px; border-radius: 8px; flex-grow: 1; min-height: 70px;">
+                                </div>
+
+                                <button type="button" class="copy-macro-btn" th:data-text="${macro.content}"
+                                    onclick="copyToClipboard(this)"
+                                    style="position: absolute; bottom: 8px; right: 8px; background: white; border: 1px solid #e5e7eb; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                        </th:block>
+                    </div>
+
+                    <div class="macro-empty" th:if="${macroList == null or macroList.empty}">
+                        등록된 매크로가 없습니다.
+                    </div>
+
                 </div>
             </div>
 
@@ -280,45 +337,6 @@
 
         document.getElementById("guideTabBtn").classList.add("active");
         document.getElementById("macroTabBtn").classList.remove("active");
-    }
-
-    // ========================================================
-    // 5. 매크로 카드 동적 렌더링
-    // ========================================================
-    function renderMacros(macroList) {
-        const board = document.getElementById("macroBoard");
-        board.innerHTML = "";
-
-        if (macroList.length === 0) {
-            board.innerHTML = "<p style='color:#888; margin: 20px auto;'>등록된 매크로가 없습니다.</p>";
-            return;
-        }
-
-        macroList.forEach((macro, index) => {
-            const isOwner = (currentUsername !== null && currentUsername === macro.username);
-
-            const card = `
-            <div class="macro-card" style="background: white; border-radius: 16px; padding: 20px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
-                    <h4 id="title-${macro.macroId}" data-title="${macro.title}" style="margin: 0; font-size: 16px; font-weight: bold; color: #1a1a1a; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${macro.title}</h4>
-                    <div style="position: relative;">
-                        <button type="button" onclick="toggleDropdown(event, ${index})" style="background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #999;">⋮</button>
-                        <div id="dropdown-${index}" class="macro-dropdown" style="display: none; position: absolute; top: 25px; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; min-width: 80px;">
-                            <button type="button" onclick="handleEdit('${macro.macroId}', ${isOwner})" style="display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: #333; ${!isOwner ? 'opacity: 0.5; cursor: not-allowed;' : ''}">수정</button>
-                            <button type="button" onclick="handleDelete('${macro.macroId}', ${isOwner})" style="display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: red; border-top: 1px solid #f0f0f0; ${!isOwner ? 'opacity: 0.5; cursor: not-allowed;' : ''}">삭제</button>
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; justify-content: space-between; position: relative;">
-                    <div id="content-${macro.macroId}" data-content="${macro.content.replace(/"/g, '&quot;')}" class="macro-commands" style="font-family: monospace; font-size: 13px; color: #333; line-height: 1.6; white-space: pre-wrap; background: #fafafa; padding: 10px; padding-bottom: 35px; border-radius: 8px; flex-grow: 1; min-height: 70px;">${macro.content}</div>
-                    <button type="button" class="copy-macro-btn" data-text="${macro.content.replace(/"/g, '&quot;')}" onclick="copyToClipboard(this)" style="position: absolute; bottom: 8px; right: 8px; background: white; border: 1px solid #e5e7eb; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </button>
-                </div>
-            </div>
-            `;
-            board.insertAdjacentHTML("beforeend", card);
-        });
     }
 
     // ========================================================
@@ -495,6 +513,33 @@
             });
         }
     });
+
+    let currentSlideIndex = 0;
+
+    function moveSlide(direction) {
+        const track = document.getElementById("reviewTrack");
+        if (!track) return;
+
+        const cards = track.querySelectorAll(".review-game-card");
+        if (cards.length === 0) return;
+
+        // 한 번에 이동할 거리 계산 (카드너비 280px + 간격 gap 20px = 총 300px)
+        const cardWidth = 250 + 20;
+
+        // 화면에 보여줄 수 있는 최대 카드 개수 대략 계산
+        const viewportWidth = track.parentElement.clientWidth;
+        const maxVisibleCards = Math.floor(viewportWidth / cardWidth);
+        const maxIndex = cards.length - maxVisibleCards;
+
+        // 인덱스 변경 및 한계치 가드
+        currentSlideIndex += direction;
+        if (currentSlideIndex < 0) currentSlideIndex = 0;
+        if (currentSlideIndex > maxIndex) currentSlideIndex = maxIndex;
+
+        // 트랙 이동시키기
+        track.style.transform = `translateX(-${currentSlideIndex * cardWidth}px)`;
+    }
+
 </script>
 
 </html>

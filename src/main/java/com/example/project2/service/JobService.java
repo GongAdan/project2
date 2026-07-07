@@ -31,17 +31,24 @@ public class JobService {
     public JobDTO getJob(Long jobId) {
 
         Job job = jobRepository.findById(jobId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("직업이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("직업이 존재하지 않습니다."));
 
         return toDTO(job);
     }
 
-    public List<Job> getJobsByRole(JobRole role){
+    public List<Job> getJobsByRole(JobRole role) {
 
-    return jobRepository.findByRoleOrderByDisplayOrder(role);
+        return jobRepository.findByRoleOrderByDisplayOrder(role);
 
-}
+    }
+
+    public List<Job> findAll() {
+        return jobRepository.findAll();
+    }
+
+    public List<Job> findByRole(JobRole role) {
+        return jobRepository.findByRole(role);
+    }
 
     private JobDTO toDTO(Job job) {
 

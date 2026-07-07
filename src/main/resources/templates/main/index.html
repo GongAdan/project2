@@ -5,109 +5,358 @@
     <th:block th:replace="~{common/head :: commonHead}"></th:block>
     <title>CrystallineConflict</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
-
 </head>
 
 <body>
 
     <th:block th:replace="~{common/header :: header}"></th:block>
-    <main>
 
+    <main class="main-container">
         <nav class="menu">
-            <a class="tab" href="https://www.ff14.co.kr/news/notice/view/2865#pvp">7.5 패치노트</a>
-            <a class="tab" th:href="@{/signals/match}">등급전 신호기</a>
+            <a class="guide" href="javascript:void(0);" id="job-list-btn">가이드</a>
+            <a class="signal" href="javascript:void(0);" id="signal-btn">등급전 신호기</a>
+            <a class="patch" href="https://www.ff14.co.kr/news/notice/view/2865#pvp">7.5 패치노트</a>
         </nav>
+
         <hr>
         <br>
         <br>
 
-        <section class="job-group">
+        <div id="dynamic-content">
+            <div th:fragment="jobListContent" th:remove="tag">
 
-            <h2>TANK</h2>
+                <section class="job-group">
+                    <h2>TANK</h2>
+                    <div class="job-grid">
+                        <a th:each="job : ${tanks}" th:href="@{/job/{id}(id=${job.jobId})}">
+                            <img th:src="@{${job.iconPath}}" alt="job icon">
+                            <p th:text="${job.jobName}"></p>
+                        </a>
+                    </div>
+                </section>
 
-            <div class="job-grid">
+                <section class="job-group">
+                    <h2>HEALER</h2>
+                    <div class="job-grid">
+                        <a th:each="job : ${healers}" th:href="@{/job/{id}(id=${job.jobId})}">
+                            <img th:src="@{${job.iconPath}}" alt="job icon">
+                            <p th:text="${job.jobName}"></p>
+                        </a>
+                    </div>
+                </section>
 
-                <a th:each="job : ${tanks}" th:href="@{/job/{id}(id=${job.jobId})}">
+                <section class="job-group">
+                    <h2>MELEE</h2>
+                    <div class="job-grid">
+                        <a th:each="job : ${melees}" th:href="@{/job/{id}(id=${job.jobId})}">
+                            <img th:src="@{${job.iconPath}}" alt="job icon">
+                            <p th:text="${job.jobName}"></p>
+                        </a>
+                    </div>
+                </section>
 
-                    <img th:src="@{${job.iconPath}}">
-                    <p th:text="${job.jobName}"></p>
+                <section class="job-group">
+                    <h2>RANGED</h2>
+                    <div class="job-grid">
+                        <a th:each="job : ${rangeds}" th:href="@{/job/{id}(id=${job.jobId})}">
+                            <img th:src="@{${job.iconPath}}" alt="job icon">
+                            <p th:text="${job.jobName}"></p>
+                        </a>
+                    </div>
+                </section>
 
-                </a>
-
-            </div>
-
-        </section>
-
-        <section class="job-group">
-
-            <h2>HEALER</h2>
-
-            <div class="job-grid">
-
-                <a th:each="job : ${healers}" th:href="@{/job/{id}(id=${job.jobId})}">
-
-                    <img th:src="@{${job.iconPath}}">
-                    <p th:text="${job.jobName}"></p>
-
-                </a>
-
-            </div>
-
-        </section>
-
-        <section class="job-group">
-
-            <h2>MELEE</h2>
-
-            <div class="job-grid">
-
-                <a th:each="job : ${melees}" th:href="@{/job/{id}(id=${job.jobId})}">
-
-                    <img th:src="@{${job.iconPath}}">
-                    <p th:text="${job.jobName}"></p>
-
-                </a>
-
-            </div>
-
-        </section>
-
-        <section class="job-group">
-
-            <h2>RANGED</h2>
-
-            <div class="job-grid">
-
-                <a th:each="job : ${rangeds}" th:href="@{/job/{id}(id=${job.jobId})}">
-
-                    <img th:src="@{${job.iconPath}}">
-                    <p th:text="${job.jobName}"></p>
-
-                </a>
+                <section class="job-group">
+                    <h2>CASTER</h2>
+                    <div class="job-grid">
+                        <a th:each="job : ${casters}" th:href="@{/job/{id}(id=${job.jobId})}">
+                            <img th:src="@{${job.iconPath}}" alt="job icon">
+                            <p th:text="${job.jobName}"></p>
+                        </a>
+                    </div>
+                </section>
 
             </div>
 
-        </section>
+            <div th:fragment="signalContent" th:remove="tag">
+                <div class="signal-wrapper">
 
-        <section class="job-group">
+                    <div class="ff14-duty-finder">
 
-            <h2>CASTER</h2>
+                        <div class="df-left-panel">
+                            <div class="df-header">
+                                <span class="df-title">임무 찾기</span>
+                                <span class="df-subtitle">직업 선택창</span>
+                            </div>
 
-            <div class="job-grid">
+                            <div class="df-body">
+                                <div class="df-job-display">
+                                    <div class="df-job-name-box">
+                                        <img th:if="${!isSignalOn}" th:src="@{/images/default-job.png}"
+                                            id="selected-job-icon" class="df-job-icon" alt="job">
 
-                <a th:each="job : ${casters}" th:href="@{/job/{id}(id=${job.jobId})}">
+                                        <img th:if="${isSignalOn and activeJob != null}"
+                                            th:src="@{${activeJob.iconPath}}" class="df-job-icon" alt="job">
 
-                    <img th:src="@{${job.iconPath}}">
-                    <p th:text="${job.jobName}"></p>
+                                        <div th:if="${!isSignalOn}" class="select-wrapper">
+                                            <select id="jobSelect" class="df-select" onchange="updateJobPreview(this)">
+                                                <option value="" disabled selected>직업을 선택하세요</option>
+                                                <option th:each="job : ${allJobs}" th:value="${job.jobId}"
+                                                    th:data-icon="${job.iconPath}" th:data-role="${job.role}"
+                                                    th:text="${job.jobName}"></option>
+                                            </select>
+                                        </div>
+                                        <div th:if="${isSignalOn and activeJob != null}" class="df-selected-job-text">
+                                            <span th:text="${activeJob.jobName}">직업</span>
+                                        </div>
+                                    </div>
 
-                </a>
+                                    <div class="df-role-tag">
+                                        <span>역할</span>
+                                        <span th:if="${!isSignalOn}" id="selected-job-role" class="badge">선택 대기</span>
+                                        <span th:if="${isSignalOn and activeJob != null}" class="badge"
+                                            th:text="${activeJob.role.name() == 'TANK' ? '방어 역할' : (activeJob.role.name() == 'HEALER' ? '지원 역할' : '공격 역할')}">공격
+                                            역할</span>
+                                    </div>
+                                </div>
 
+                                <div class="df-mission-list">
+                                    <div class="df-mission-header">❖ PVP 임무</div>
+                                    <div class="df-mission-item">
+                                        <input type="checkbox" checked disabled> 등급전 : 크리스탈라인 컨플릭트
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="df-footer">
+                                <div class="df-count-info">
+                                    <p class="count-title">참가신청 인원</p>
+                                    <div class="participant-count">
+                                        <span th:text="${queueCount != null ? queueCount : 0}">0</span>/10
+                                    </div>
+                                </div>
+
+                                <div class="df-btn-group">
+                                    <button th:if="${!isSignalOn}" type="button" class="df-btn btn-submit"
+                                        onclick="toggleSignal('on')">참가</button>
+
+                                    <button th:if="${isSignalOn}" type="button" class="df-btn btn-cancel active-signal"
+                                        onclick="toggleSignal('off')">참가 취소</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="df-right-panel">
+                            <div class="cc-header">
+                                <span class="cc-badge">PVP</span>
+                                <span class="cc-title">크리스탈라인 컨플릭트 등급전</span>
+                            </div>
+
+                            <div class="cc-crystal-area">
+                                <div class="crystal-shape"></div>
+                                <div class="crystal-text">크리스탈 이미지</div>
+                            </div>
+
+                            <div class="cc-status-board">
+                                <div class="cc-slots">
+                                    <div th:each="seq : ${#numbers.sequence(1, 10)}" class="slot-container">
+
+                                        <th:block
+                                            th:if="${activeSignals != null and #lists.size(activeSignals) >= seq}">
+                                            <span class="slot-dot filled"></span>
+                                            <div class="slot-tooltip"
+                                                th:text="${activeSignals[seq - 1].job != null ? activeSignals[seq - 1].job.jobName : (activeSignals[seq - 1].jobName != null ? activeSignals[seq - 1].jobName : '참가자')}">
+                                                직업이름</div>
+                                        </th:block>
+
+                                        <th:block
+                                            th:unless="${activeSignals != null and #lists.size(activeSignals) >= seq}">
+                                            <span class="slot-dot"></span>
+                                            <div class="slot-tooltip">비어 있음</div>
+                                        </th:block>
+
+                                    </div>
+                                </div>
+
+                                <div class="cc-match-msg" th:classappend="${isSignalOn} ? 'matching' : ''">
+                                    <span th:text="${isSignalOn} ? '매칭 대기중...' : '대기 등록이 필요합니다.'">방이 열렸습니다!</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="map-info-section">
+                        <p>현재 맵 : <span id="current-map-text">로딩 중...</span></p>
+                        <p>다음 맵 : <span id="next-map-text">로딩 중...</span></p>
+                    </div>
+
+                </div>
             </div>
 
-        </section>
+        </div>
 
     </main>
 
+    <script th:src="@{/js/jquery-3.6.0.min.js}" th:if="false"></script>
+
+    <script>
+        // 현재 보고 있는 화면 상태 ('guide' 또는 'signal')
+        let currentTab = 'guide';
+
+        // 💡 해결책: 화면 조각이 동적으로 바뀌어도 버튼들이 무조건 작동하도록 상위 객체(document)에 이벤트를 겁니다.
+        // 1. 등급전 신호기 메뉴 탭 클릭 시
+        document.addEventListener('click', function (e) {
+            if (e.target && (e.target.id === 'signal-btn' || e.target.closest('#signal-btn'))) {
+                e.preventDefault();
+                currentTab = 'signal';
+                refreshFragment();
+            }
+        });
+
+        // 4. 가이드 버튼 클릭 시 직업 목록 비동기 로드
+        document.addEventListener('click', function (e) {
+            if (e.target && (e.target.id === 'job-list-btn' || e.target.closest('#job-list-btn'))) {
+                e.preventDefault();
+                currentTab = 'guide';
+                fetch('/signals/jobs-fragment')
+                    .then(function (response) { return response.text(); })
+                    .then(function (html) {
+                        document.getElementById('dynamic-content').innerHTML = html;
+                    })
+                    .catch(function (error) { console.error('직업 목록 로드 실패:', error); });
+            }
+        });
+
+        // 2. 신호기 ON / OFF 요청 처리
+        function toggleSignal(action) {
+            var url = action === 'on' ? '/signals/on' : '/signals/off';
+            var params = new URLSearchParams();
+
+            if (action === 'on') {
+                var jobSelect = document.getElementById('jobSelect');
+                if (!jobSelect) return;
+                var jobId = jobSelect.value;
+                if (!jobId) {
+                    alert('직업을 선택해 주세요.');
+                    return;
+                }
+                params.append('jobId', jobId);
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: params
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        refreshFragment();
+                    } else {
+                        alert('요청 처리 중 오류가 발생했습니다.');
+                    }
+                })
+                .catch(function (error) {
+                    console.error('네트워크 에러:', error);
+                });
+        }
+
+        // 3. 전역 화면 조각을 새로고침해오는 독립 함수
+        function refreshFragment() {
+            if (currentTab !== 'signal') {
+                return;
+            }
+
+            fetch('/signals/fragment')
+                .then(function (response) { return response.text(); })
+                .then(function (html) {
+                    if (currentTab === 'signal') {
+                        document.getElementById('dynamic-content').innerHTML = html;
+                    }
+                })
+                .catch(function (error) { console.error('화면 갱신 실패:', error); });
+        }
+
+        // 10초마다 자동 새로고침 시도
+        setInterval(refreshFragment, 10000);
+
+        // 5. 셀렉트 박스 변동 시 동적 미리보기 기능
+        function updateJobPreview(selectElement) {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var iconPath = selectedOption.getAttribute('data-icon');
+            var role = selectedOption.getAttribute('data-role');
+
+            if (iconPath) {
+                document.getElementById('selected-job-icon').src = iconPath;
+            }
+
+            var roleBadge = document.getElementById('selected-job-role');
+            if (roleBadge) {
+                var roleText = '공격 역할';
+                if (role === 'TANK') roleText = '방어 역할';
+                if (role === 'HEALER') roleText = '지원 역할';
+                roleBadge.innerText = roleText;
+            }
+        }
+
+        // =======================================================
+        // 💡 [주석 해제 및 수정] 에러 방지를 위해 맵 관련 기능 활성화
+        // =======================================================
+
+        // 맵 이름 배열 선언
+        const pvpMaps = [
+            "팔라이스트라",
+            "화산 심장",
+            "절정의 구름",
+            "동방 꼭두각시 어전",
+            "붉은 사막",
+            "바닷가",
+            "하르모니아 전쟁도서관"
+        ];
+
+        const baseTime = new Date(2024, 0, 1, 0, 0, 0).getTime();
+        const rotationInterval = 2 * 60 * 60 * 1000; // 2시간
+
+        // 현재 맵과 다음 맵 데이터를 계산하는 함수
+        function getCurrentMap() {
+            const now = new Date().getTime();
+            const timePassed = now - baseTime;
+
+            const totalRotations = Math.floor(timePassed / rotationInterval);
+            const currentMapIndex = totalRotations % pvpMaps.length;
+            const nextMapIndex = (currentMapIndex + 1) % pvpMaps.length;
+
+            const timeLeftMs = rotationInterval - (timePassed % rotationInterval);
+            const minutesLeft = Math.floor(timeLeftMs / (1000 * 60));
+
+            return {
+                current: pvpMaps[currentMapIndex],
+                next: pvpMaps[nextMapIndex],
+                timeLeft: minutesLeft
+            };
+        }
+
+        // 계산된 맵 이름을 HTML 화면에 실제로 뿌려주는 함수
+        function updateMapDisplay() {
+            const mapData = getCurrentMap();
+
+            const currentMapEl = document.getElementById('current-map-text');
+            const nextMapEl = document.getElementById('next-map-text');
+
+            if (currentMapEl) {
+                currentMapEl.innerText = mapData.current;
+            }
+            if (nextMapEl) {
+                nextMapEl.innerText = mapData.next;
+            }
+        }
+
+        // 페이지가 처음 켜졌을 때 즉시 실행하고, 이후 10초마다 반복 실행
+        updateMapDisplay();
+        setInterval(updateMapDisplay, 10000);
+
+    </script>
 </body>
 
 </html>
