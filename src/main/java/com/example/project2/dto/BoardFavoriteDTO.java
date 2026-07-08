@@ -19,4 +19,10 @@ public class BoardFavoriteDTO {
 
     private LocalDateTime createdAt;
 
+    private String title; 
+
+    private String nickname; 
+    
+    private String jobName;
+
 }

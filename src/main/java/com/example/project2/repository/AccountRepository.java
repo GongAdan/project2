@@ -9,7 +9,8 @@ import com.example.project2.entity.Account;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByUsername(String username);
 
+    Optional<Account> findByNickname(String nickname);
+
     boolean existsByUsername(String username);
 
-    boolean existsByNickname(String nickname);
 }

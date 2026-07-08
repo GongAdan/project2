@@ -1,0 +1,395 @@
+/* ==========================================================================
+   마이페이지 전용 메인 레이아웃
+   ========================================================================== */
+
+/* 마이페이지 전체 컨테이너 */
+.mypage-container {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 🎯 [수정] 적용 안 되던 마이페이지 메인 타이틀 색상 가시성 확보 */
+.mypage-container .job-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 0;
+}
+
+.mypage-container .job-header h1 {
+    margin: 0;
+    color: #222 !important;
+    /* 배경에 묻히지 않는 진한 검은색 */
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+
+/* ==========================================================================
+   상단: 내 정보 관리 박스 스타일
+   ========================================================================== */
+
+.user-info-section {
+    background: white;
+    padding: 35px 40px 20px 40px;
+    border-radius: 16px;
+    border: 1px solid #eef1f6;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.user-info-section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* 입력 폼 라인 정렬 (정밀 대칭 정렬) */
+.user-info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 42px;
+    /* 세로 라인 일치 */
+}
+
+.user-info-row label {
+    min-width: 90px;
+    /* 라벨 가로폭 고정하여 인풋 시작점 일치 */
+    color: #333;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* 닉네임, 비밀번호 입력창 */
+.user-info-row input[type="text"],
+.user-info-row input[type="password"] {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #d8dce6;
+    font-size: 14px;
+    width: 280px;
+    height: 40px;
+    box-sizing: border-box;
+    outline: none;
+    margin-right: 15px;
+    transition: all 0.2s ease;
+}
+
+.user-info-row input:focus {
+    border-color: #3b90ff;
+    box-shadow: 0 0 0 3px rgba(59, 144, 255, 0.1);
+}
+
+/* 🎯 [요구사항] 버튼 형태 말고 박스 없는 텍스트 형태의 수정 버튼 */
+.text-edit-btn {
+    background: none !important;
+    border: none !important;
+    color: #3b90ff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    padding: 5px 10px !important;
+    transition: color 0.2s ease;
+    text-decoration: none !important;
+}
+
+.text-edit-btn:hover {
+    color: #1d73e8 !important;
+}
+
+
+/* ==========================================================================
+   하단: 내 활동 내역 및 탭 스타일 (guide.css 완전 동기화)
+   ========================================================================== */
+
+.board-section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 20px;
+}
+
+.board-tab {
+    display: flex;
+    gap: 12px;
+    /* 가이드와 동일하게 12px로 맞춤 */
+    margin-bottom: 25px;
+    /* 아래 가로선(<hr>)과의 간격 */
+    padding-bottom: 0 !important;
+    /* ❌ 기존 15px 패딩 제거 */
+    border-bottom: none !important;
+    /* ❌ 기존 회색 언더라인 제거 (HTML의 <hr>과 중복 차단) */
+}
+
+.board-tab .tab {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+
+    height: 40px !important;
+    padding: 0 24px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 8px !important;
+
+    background: #d9dde6;
+    color: #4e5968 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    /* 🎯 가이드 사양 추가: 텍스트 수직 중앙 정렬 보정 */
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+/* 🎯 마우스 호버 및 선택된 활성화(active) 상태 정의 */
+.board-tab .tab:hover,
+.board-tab .tab.active {
+    background: #3b90ff !important;
+    /* 파란색 활성화 */
+    color: white !important;
+    /* 흰색 글씨 */
+}
+
+
+/* ==========================================================================
+   데이터 테이블 및 빈 화면 스타일
+   ========================================================================== */
+
+#activityContentContainer {
+    margin-top: 24px;
+    /* 원하는 간격(공백) 크기로 자유롭게 조절하세요 */
+}
+
+.board-table {
+    width: 100%;
+    margin-top: 0 !important;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.board-table th {
+    background: #f7f9fc;
+    padding: 16px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 1px solid #eef1f6;
+}
+
+.board-table td {
+    padding: 16px;
+    text-align: center;
+    color: #4e5968;
+    font-size: 14px;
+    border-bottom: 1px solid #f2f4f8;
+}
+
+.board-table td.title {
+    text-align: left;
+    padding-left: 25px;
+}
+
+.board-table td.title a {
+    color: #222;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.board-table td.title a:hover {
+    color: #3b90ff;
+}
+
+/* 데이터가 없을 때 스타일 */
+.board-empty {
+    color: #888;
+    margin: 40px auto;
+    text-align: center;
+    font-size: 15px;
+    width: 100%;
+    padding: 30px 0;
+    border-top: 1px dashed #e5e7eb;
+    border-bottom: 1px dashed #e5e7eb;
+}
+
+/* ==========================================================================
+   마이페이지 전용 모달창 레이아웃
+   ========================================================================== */
+
+/* 모달 배경 (어두운 반투명 딤 처리) */
+.mypage-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* 모달 윈도우 본체 */
+.mypage-modal .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    animation: modalFadeIn 0.25s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mypage-modal h4 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    text-align: center;
+}
+
+/* 입력 폼 필드 그룹 */
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.modal-form-group label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4e5968;
+}
+
+.modal-form-group input {
+    width: 100%;
+    height: 42px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #d8dce6;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-form-group input:focus {
+    border-color: #3b90ff;
+}
+
+/* 기존 정보 읽기 전용 인풋 스타일 */
+.modal-form-group input.readonly-input {
+    background-color: #f4f6fa;
+    color: #8b95a1;
+    border-color: #e5e8eb;
+    cursor: not-allowed;
+}
+
+/* 하단 버튼 배치 및 액션 */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.modal-actions button {
+    flex: 1;
+    height: 44px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-actions .btn-cancel {
+    background: #e9ecf3;
+    color: #4e5968;
+}
+
+.modal-actions .btn-cancel:hover {
+    background: #dcdee6;
+}
+
+.modal-actions .btn-submit {
+    background: #3b90ff;
+    color: white;
+}
+
+.modal-actions .btn-submit:hover {
+    background: #257ae6;
+}
+
+/* 🎯 myPage.css 최하단에 붙여넣으세요 */
+.btn-check-duplicate {
+    width: 90px !important;
+    height: 42px !important;
+    background: #4e5968 !important;
+    /* 세련된 다크 그레이 */
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+    white-space: nowrap;
+}
+
+.btn-check-duplicate:hover {
+    background: #333d4b !important;
+    /* 호버 시 조금 더 어둡게 변경 */
+}
+
+.withdraw-inside-box {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    text-align: right;
+    z-index: 10;
+}
+
+/* 2. 회원 탈퇴 텍스트 버튼 자체 스타일 */
+.withdraw-inside-box .btn-withdraw {
+    background: none !important;
+    border: none !important;
+    color: #ff4d4f !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 0 !important;
+    transition: color 0.2s ease;
+}
+
+/* 마우스를 올렸을 때의 호버 효과 */
+.withdraw-inside-box .btn-withdraw:hover {
+    color: #e03e40 !important;

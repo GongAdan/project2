@@ -27,4 +27,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Double getAverageScore(@Param("jobId") Long jobId);
 
     long countByJobJobId(Long jobId);
+    
 }

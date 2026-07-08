@@ -121,12 +121,10 @@
                 <div class="board-header">
                     <button type="button" id="openMacroModalBtn" class="macro-write-btn">+</button>
                 </div>
+                <div id="macroBoard" class="empty-parent" style="display: flex; flex-wrap: wrap; gap: 20px;">
 
-                <div id="macroBoard" th:classappend="${macroList == null or macroList.empty} ? 'empty-parent' : ''"
-                    style="display: flex; flex-wrap: wrap; gap: 20px;">
-
-                    <div class="macro-card" th:if="${macroList != null and macroList.hasContent()}"
-                        th:each="macro, iterStat : ${macroList.content}"
+                    <div class="macro-card" th:if="${macroList != null and !macroList.empty}"
+                        th:each="macro, iterStat : ${macroList}"
                         style="background: white; border-radius: 16px; padding: 20px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
 
                         <th:block
@@ -140,19 +138,17 @@
                                 </h4>
 
                                 <div style="position: relative;">
-                                    <button type="button"
-                                        th:onclick="'toggleDropdown(event, ' + ${iterStat.index} + ')'"
+                                    <button type="button" th:onclick="|toggleDropdown(event, ${iterStat.index})|"
                                         style="background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #999;">⋮</button>
 
                                     <div th:id="'dropdown-' + ${iterStat.index}" class="macro-dropdown"
                                         style="display: none; position: absolute; top: 25px; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; min-width: 80px;">
 
-                                        <button type="button"
-                                            th:onclick="'handleEdit(\'' + ${macro.macroId} + '\', ' + ${isOwner} + ')'"
+                                        <button type="button" th:onclick="|handleEdit('${macro.macroId}', ${isOwner})|"
                                             th:style="'display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: #333;' + (${!isOwner} ? 'opacity: 0.5; cursor: not-allowed;' : '')">수정</button>
 
                                         <button type="button"
-                                            th:onclick="'handleDelete(\'' + ${macro.macroId} + '\', ' + ${isOwner} + ')'"
+                                            th:onclick="|handleDelete('${macro.macroId}', ${isOwner})|"
                                             th:style="'display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: red; border-top: 1px solid #f0f0f0;' + (${!isOwner} ? 'opacity: 0.5; cursor: not-allowed;' : '')">삭제</button>
                                     </div>
                                 </div>
@@ -180,69 +176,66 @@
                         </th:block>
                     </div>
 
-                    <div class="macro-empty" th:if="${macroList == null or macroList.empty}">
+                    <div class="macro-empty">
                         등록된 매크로가 없습니다.
                     </div>
-
                 </div>
             </div>
 
-        </div>
+            <div id="reviewModal"
+                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+                <div
+                    style="background: white; padding: 25px; border-radius: 12px; width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                    <h3 style="margin-top: 0; margin-bottom: 15px;">리뷰 작성하기</h3>
 
-        <div id="reviewModal"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-            <div
-                style="background: white; padding: 25px; border-radius: 12px; width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-                <h3 style="margin-top: 0; margin-bottom: 15px;">리뷰 작성하기</h3>
+                    <select id="reviewScore"
+                        style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+                        <option value="5">★★★★★ (5점)</option>
+                        <option value="4">★★★★☆ (4점)</option>
+                        <option value="3">★★★☆☆ (3점)</option>
+                        <option value="2">★★☆☆☆ (2점)</option>
+                        <option value="1">★☆☆☆☆ (1점)</option>
+                    </select>
 
-                <select id="reviewScore"
-                    style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
-                    <option value="5">★★★★★ (5점)</option>
-                    <option value="4">★★★★☆ (4점)</option>
-                    <option value="3">★★★☆☆ (3점)</option>
-                    <option value="2">★★☆☆☆ (2점)</option>
-                    <option value="1">★☆☆☆☆ (1점)</option>
-                </select>
+                    <textarea id="reviewContentInput" placeholder="리뷰 내용을 입력해주세요."
+                        style="width: 100%; height: 120px; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; resize: none; box-sizing: border-box;"></textarea>
 
-                <textarea id="reviewContentInput" placeholder="리뷰 내용을 입력해주세요."
-                    style="width: 100%; height: 120px; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; resize: none; box-sizing: border-box;"></textarea>
-
-                <div style="text-align: right;">
-                    <button type="button" onclick="closeReviewModal()"
-                        style="background: #eee; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: 6px;">취소</button>
-                    <button type="button" onclick="submitReview()"
-                        style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">등록</button>
+                    <div style="text-align: right;">
+                        <button type="button" onclick="closeReviewModal()"
+                            style="background: #eee; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: 6px;">취소</button>
+                        <button type="button" onclick="submitReview()"
+                            style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">등록</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="macroModal"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-            <div
-                style="background: white; padding: 25px; border-radius: 12px; width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-                <h3 style="margin-top: 0; margin-bottom: 15px;">새 매크로 등록</h3>
-                <input type="text" id="macroTitle" placeholder="매크로 제목"
-                    style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
-                <textarea id="macroContent" placeholder="매크로 내용"
-                    style="width: 100%; height: 150px; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; resize: none; box-sizing: border-box; font-family: monospace; white-space: pre;"></textarea>
-                <div style="text-align: right;">
-                    <button type="button" onclick="closeMacroModal()"
-                        style="background: #eee; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: 6px;">취소</button>
-                    <button type="button" onclick="submitMacro()"
-                        style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">등록</button>
+            <div id="macroModal"
+                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+                <div
+                    style="background: white; padding: 25px; border-radius: 12px; width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                    <h3 style="margin-top: 0; margin-bottom: 15px;">새 매크로 등록</h3>
+                    <input type="text" id="macroTitle" placeholder="매크로 제목"
+                        style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+                    <textarea id="macroContent" placeholder="매크로 내용"
+                        style="width: 100%; height: 150px; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; resize: none; box-sizing: border-box; font-family: monospace; white-space: pre;"></textarea>
+                    <div style="text-align: right;">
+                        <button type="button" onclick="closeMacroModal()"
+                            style="background: #eee; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: 6px;">취소</button>
+                        <button type="button" onclick="submitMacro()"
+                            style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">등록</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="loginModal" class="modal">
-            <div class="modal-box">
-                <h3>회원만 이용 가능한 기능입니다.</h3>
-                <div class="modal-btns">
-                    <button type="button" onclick="closeModal()">닫기</button>
-                    <button type="button" onclick="goLogin()">로그인</button>
+            <div id="loginModal" class="modal">
+                <div class="modal-box">
+                    <h3>회원만 이용 가능한 기능입니다.</h3>
+                    <div class="modal-btns">
+                        <button type="button" onclick="closeModal()">닫기</button>
+                        <button type="button" onclick="goLogin()">로그인</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
     </main>
 
@@ -269,7 +262,7 @@
     // 모달 DOM 참조 객체
     const loginModal = document.getElementById("loginModal");
     const macroModal = document.getElementById("macroModal");
-    const reviewModal = document.getElementById("reviewModal"); // 리뷰 모달 참조 추가
+    const reviewModal = document.getElementById("reviewModal");
 
     // 수정 타겟 ID 기억용 변수
     let editingMacroId = null;
@@ -302,7 +295,7 @@
     }
 
     // ========================================================
-    // 4. 탭 전환 기능
+    // 4. 탭 전환 기능 (매크로 탭 켤 때 최신 리스트 로드 연동)
     // ========================================================
     function loadMacroTab() {
         const guideSection = document.getElementById("guideSection");
@@ -318,10 +311,8 @@
         document.getElementById("macroTabBtn").classList.add("active");
         document.getElementById("guideTabBtn").classList.remove("active");
 
-        fetch(`/api/macro/list/${jobId}`)
-            .then(res => res.json())
-            .then(macroList => renderMacros(macroList))
-            .catch(err => console.error("매크로 로딩 실패:", err));
+        // 🎯 매크로 탭을 클릭해 열 때 서버로부터 최신 데이터를 비동기로 조회해옵니다.
+        loadMacros();
     }
 
     function loadGuideTab() {
@@ -337,6 +328,80 @@
 
         document.getElementById("guideTabBtn").classList.add("active");
         document.getElementById("macroTabBtn").classList.remove("active");
+    }
+
+    // ========================================================
+    // 5. [신규 추가] 매크로 비동기 데이터 로드 및 렌더링 함수
+    // ========================================================
+    function loadMacros() {
+        fetch(`/api/macro/list/${jobId}`)
+            .then(res => {
+                if (!res.ok) throw new Error("매크로 목록을 불러오지 못했습니다.");
+                return res.json();
+            })
+            .then(data => {
+                renderMacros(data);
+            })
+            .catch(err => console.error(err.message));
+    }
+
+    function renderMacros(macroList) {
+        const board = document.getElementById("macroBoard");
+        if (!board) return;
+
+        board.innerHTML = ""; // 기존 카드 청소
+
+        // 데이터가 없거나 비어있는 경우 오리지널 'macro-empty' 양식 유지
+        if (!macroList || macroList.length === 0) {
+            board.classList.add("empty-parent");
+            board.innerHTML = `<div class="macro-empty">등록된 매크로가 없습니다.</div>`;
+            return;
+        }
+
+        board.classList.remove("empty-parent");
+
+        // 최신 리스트 데이터를 순회하며 동적으로 HTML 카드 조립
+        macroList.forEach((macro, index) => {
+            const isOwner = (currentUsername !== null && currentUsername === macro.username);
+
+            const card = document.createElement("div");
+            card.className = "macro-card";
+            card.style = "background: white; border-radius: 16px; padding: 20px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;";
+
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
+                    <h4 id="title-${macro.macroId}" data-title="${String(macro.title).replace(/"/g, '&quot;')}"
+                        style="margin: 0; font-size: 16px; font-weight: bold; color: #1a1a1a; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${macro.title}
+                    </h4>
+                    <div style="position: relative;">
+                        <button type="button" onclick="toggleDropdown(event, ${index})"
+                                style="background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #999;">⋮</button>
+                        <div id="dropdown-${index}" class="macro-dropdown"
+                             style="display: none; position: absolute; top: 25px; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; min-width: 80px;">
+                            <button type="button" onclick="handleEdit('${macro.macroId}', ${isOwner})"
+                                    style="display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: #333; ${!isOwner ? 'opacity: 0.5; cursor: not-allowed;' : ''}">수정</button>
+                            <button type="button" onclick="handleDelete('${macro.macroId}', ${isOwner})"
+                                    style="display: block; width: 100%; text-align: left; background: none; border: none; padding: 8px 12px; font-size: 13px; cursor: pointer; color: red; border-top: 1px solid #f0f0f0; ${!isOwner ? 'opacity: 0.5; cursor: not-allowed;' : ''}">삭제</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; justify-content: space-between; position: relative;">
+                    <div id="content-${macro.macroId}" data-content="${String(macro.content).replace(/"/g, '&quot;')}" class="macro-commands"
+                         style="font-family: monospace; font-size: 13px; color: #333; line-height: 1.6; white-space: pre-wrap; background: #fafafa; padding: 10px; padding-bottom: 35px; border-radius: 8px; flex-grow: 1; min-height: 70px;">
+                         ${macro.content}
+                    </div>
+                    <button type="button" class="copy-macro-btn" data-text="${String(macro.content).replace(/"/g, '&quot;')}" onclick="copyToClipboard(this)"
+                            style="position: absolute; bottom: 8px; right: 8px; background: white; border: 1px solid #e5e7eb; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            board.appendChild(card);
+        });
     }
 
     // ========================================================
@@ -362,6 +427,7 @@
         if (macroModal) macroModal.style.display = "flex";
     }
 
+    // 🎯 [수정] location.reload()를 빼고 비동기로 최신 리스트만 재로드하도록 개선
     function submitMacro() {
         const title = document.getElementById("macroTitle").value;
         const content = document.getElementById("macroContent").value;
@@ -389,18 +455,21 @@
         })
             .then(res => {
                 if (!res.ok) throw new Error(isEditMode ? "매크로 수정에 실패했습니다." : "매크로 등록에 실패했습니다.");
-                return res.json();
+                return res.text();
             })
-            .then(macroList => {
+            .then(() => {
                 closeMacroModal();
-                renderMacros(macroList);
                 if (isEditMode) alert("성공적으로 수정되었습니다!");
+                else alert("매크로가 성공적으로 등록되었습니다!");
+
+                // 🎯 [해결] 새로고침 없이 비동기로 카드를 즉시 다시 그립니다.
+                loadMacros();
             })
             .catch(err => alert(err.message));
     }
 
     // ========================================================
-    // 7. [추가] 리뷰 모달창 제어 핸들러 함수
+    // 7. 리뷰 모달창 제어 핸들러 함수
     // ========================================================
     function closeReviewModal() {
         if (reviewModal) {
@@ -425,7 +494,6 @@
             content: content
         };
 
-        // 💡 본인의 실제 컨트롤러 API 주소 경로에 맞게 AJAX 전송 처리하세요.
         fetch("/api/review", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -434,7 +502,7 @@
             .then(res => {
                 if (!res.ok) return res.text().then(text => { throw new Error(text); });
                 alert("리뷰가 성공적으로 등록되었습니다!");
-                location.reload(); // 등록 후 화면 갱신
+                location.reload();
             })
             .catch(err => alert(err.message || "리뷰 등록 중 오류가 발생했습니다."));
     }
@@ -448,7 +516,9 @@
             if (el.id !== `dropdown-${index}`) el.style.display = 'none';
         });
         const dropdown = document.getElementById(`dropdown-${index}`);
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        if (dropdown) {
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
     }
 
     document.addEventListener('click', () => {
@@ -460,13 +530,21 @@
         editMacro(macroId);
     }
 
+    // 🎯 [수정] location.reload()를 빼고 비동기로 최신 리스트만 재로드하도록 개선
     function handleDelete(macroId, isOwner) {
         if (!isOwner) { alert("본인이 작성한 매크로만 삭제할 수 있습니다."); return; }
         if (!confirm("정말 이 매크로를 삭제하시겠습니까?")) return;
 
         fetch(`/api/macro/${macroId}`, { method: "DELETE" })
-            .then(res => { if (!res.ok) throw new Error("삭제 실패했습니다."); return res.json(); })
-            .then(macroList => { renderMacros(macroList); })
+            .then(res => {
+                if (!res.ok) throw new Error("삭제 실패했습니다.");
+                return res.text();
+            })
+            .then(() => {
+                alert("성공적으로 삭제되었습니다.");
+                // 🎯 [해결] 새로고침 없이 비동기로 카드를 즉시 다시 그립니다.
+                loadMacros();
+            })
             .catch(err => alert(err.message));
     }
 
@@ -475,20 +553,23 @@
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 const svg = button.querySelector("svg");
-                const originalStroke = svg.getAttribute("stroke");
-                svg.setAttribute("stroke", "#10b981");
-                alert("매크로가 클립보드에 복사되었습니다!");
-                setTimeout(() => { svg.setAttribute("stroke", originalStroke); }, 1500);
+                if (svg) {
+                    const originalStroke = svg.getAttribute("stroke");
+                    svg.setAttribute("stroke", "#10b981");
+                    alert("매크로가 클립보드에 복사되었습니다!");
+                    setTimeout(() => { svg.setAttribute("stroke", originalStroke); }, 1500);
+                }
             })
             .catch(err => { alert("복사에 실패했습니다."); });
     }
 
     // ========================================================
-    // 9. DOM 로드 완료 후 안전하게 이벤트 바인딩 (통합 제어)
+    // 9. DOM 로드 완료 후 안전하게 이벤트 바인딩 및 최초 로드
     // ========================================================
     document.addEventListener("DOMContentLoaded", () => {
+        // 🎯 페이지 접속 시 처음에 데이터를 한 번 불러옵니다.
+        loadMacros();
 
-        // 매크로 등록 버튼 연동
         const openMacroBtn = document.getElementById("openMacroModalBtn");
         if (openMacroBtn) {
             openMacroBtn.addEventListener("click", function () {
@@ -501,7 +582,6 @@
             });
         }
 
-        // 리뷰 등록 버튼 연동 (안전한 위치로 이동 및 안전 가드 추가)
         const openReviewBtn = document.getElementById("openReviewModalBtn");
         if (openReviewBtn) {
             openReviewBtn.addEventListener("click", function () {
@@ -523,23 +603,17 @@
         const cards = track.querySelectorAll(".review-game-card");
         if (cards.length === 0) return;
 
-        // 한 번에 이동할 거리 계산 (카드너비 280px + 간격 gap 20px = 총 300px)
         const cardWidth = 250 + 20;
-
-        // 화면에 보여줄 수 있는 최대 카드 개수 대략 계산
         const viewportWidth = track.parentElement.clientWidth;
         const maxVisibleCards = Math.floor(viewportWidth / cardWidth);
         const maxIndex = cards.length - maxVisibleCards;
 
-        // 인덱스 변경 및 한계치 가드
         currentSlideIndex += direction;
         if (currentSlideIndex < 0) currentSlideIndex = 0;
         if (currentSlideIndex > maxIndex) currentSlideIndex = maxIndex;
 
-        // 트랙 이동시키기
         track.style.transform = `translateX(-${currentSlideIndex * cardWidth}px)`;
     }
-
 </script>
 
 </html>

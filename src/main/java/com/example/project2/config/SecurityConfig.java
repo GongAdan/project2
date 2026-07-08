@@ -21,7 +21,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             // 게시글 수정, 삭제는 사용자만 가능하도록 설정 
-            .requestMatchers("/board/register", "/board/edit", "/board/delete", "/board/like").hasAnyRole("USER","ADMIN")
+            .requestMatchers("/board/register", "/board/edit", "/board/delete", "/board/like", "/auth/**").hasAnyRole("USER","ADMIN")
             // hasRole("USER"): ROLE 이름이 ROLE_USER인 사용자에 대한 접근 권한 부여 
             // 위 경로 외에 나머지 경로는 모든 권한 접근 가능 
             .anyRequest().permitAll()
