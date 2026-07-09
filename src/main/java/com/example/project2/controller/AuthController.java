@@ -137,4 +137,40 @@ public class AuthController {
 
         return org.springframework.http.ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
+
+    @org.springframework.web.bind.annotation.PostMapping("/withdraw")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public org.springframework.http.ResponseEntity<String> withdraw(
+            Authentication authentication,
+            jakarta.servlet.http.HttpServletRequest request) { // 👈 세션 제어를 위해 request 추가
+
+        if (authentication == null) {
+            return org.springframework.http.ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        String username = authentication.getName();
+
+        try {
+            // 1. 서비스 단에 회원 탈퇴 로직 실행 (마스킹)
+            accountService.withdrawUser(username);
+
+            // 2. 🎯 [세션 파기] 서버에 저장된 현재 유저의 로그인 세션 무효화
+            jakarta.servlet.http.HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate(); // 세션 날리기
+            }
+
+            // 3. 🎯 [시큐리티 컨텍스트 초기화] 스프링 시큐리티 인증 정보 지우기
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+
+            return org.springframework.http.ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+
+        } catch (Exception e) {
+            // 🎯 [여기 추가] 백엔드 콘솔창에 진짜 에러가 왜 났는지 빨간 글씨로 출력하라는 명령어입니다.
+            e.printStackTrace();
+
+            return org.springframework.http.ResponseEntity.status(500).body("회원 탈퇴 처리 중 내부 오류가 발생했습니다.");
+        }
+
+    }
 }

@@ -262,6 +262,10 @@ public class BoardService {
                 if (dto.getFiles() != null && !dto.getFiles().isEmpty()) {
 
                         List<Attach> newAttachs = dto.getFiles().stream()
+                                        // 🎯 [여기 추가] 빈 파일 스트림은 필터링하여 통과시키지 않음
+                                        .filter(file -> file != null && !file.isEmpty()
+                                                        && file.getOriginalFilename() != null
+                                                        && !file.getOriginalFilename().isBlank())
                                         .map(file -> {
                                                 String savedName = fileStorageService.save(file);
 
@@ -274,9 +278,13 @@ public class BoardService {
                                         })
                                         .toList();
 
-                        board.getAttachList().addAll(newAttachs);
+                        // 🎯 필터링을 거친 진짜 새 파일이 있을 때만 연관관계에 추가
+                        if (!newAttachs.isEmpty()) {
+                                board.getAttachList().addAll(newAttachs);
+                        }
                 }
 
+                // 3. 삭제된 개수 등이 실시간 반영된 영속성 컨텍스트 기준으로 파일 수 카운트 조정
                 board.setAttachCount(board.getAttachList().size());
 
                 boardRepository.save(board);
@@ -284,7 +292,7 @@ public class BoardService {
                 return 1;
         }
 
-        // 게시글 삭제 
+        // 게시글 삭제
         @Transactional
         public void deleteBoard(Long boardId) {
                 // 즐겨찾기 삭제

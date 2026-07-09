@@ -169,4 +169,26 @@ public class AccountService implements UserDetailsService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void withdrawUser(String username) {
+        // 1. 탈퇴할 회원 정보 조회
+        com.example.project2.entity.Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        // 2. 절대로 중복되지 않을 고유 접미사 생성 (시간 밀리초 + 랜덤 4자리)
+        String uniqueSuffix = System.currentTimeMillis() + "_" + java.util.UUID.randomUUID().toString().substring(0, 4);
+
+        // 3. 비식별화 마스킹 진행
+        account.setUsername("withdrawn_" + uniqueSuffix);
+        account.setPassword("");
+
+        // 🎯 [핵심 수정] 닉네임 유니크 제약조건을 깨지 않도록 고유 번호를 결합합니다.
+        // 화면에는 "(탈퇴한 회원)_171981234" 처럼 표기되거나, 앞의 글자만 잘라서 보여줄 수 있습니다.
+        account.setNickname("(탈퇴한 회원)_" + uniqueSuffix.substring(0, 8));
+
+        // 4. DB에 확실하게 반영
+        accountRepository.saveAndFlush(account);
+    }
+
 }

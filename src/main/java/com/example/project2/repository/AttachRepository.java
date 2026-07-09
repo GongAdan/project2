@@ -5,4 +5,5 @@ import com.example.project2.entity.Attach;
 
 public interface AttachRepository extends JpaRepository<Attach, Long> {
     
+    
 }

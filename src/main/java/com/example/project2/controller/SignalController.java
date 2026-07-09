@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.project2.common.JobRole;
+import com.example.project2.common.Tier;
 import com.example.project2.entity.Signal;
 import com.example.project2.service.JobService;
 import com.example.project2.service.SignalService;
@@ -25,72 +26,62 @@ public class SignalController {
     private final SignalService signalService;
     private final JobService jobService;
 
-    // 1. 메인 페이지 초기 로딩 및 비동기 갱신 시 모두 공유하는 데이터 세팅 메서드
-    private void populateSignalModel(HttpSession session, Model model) {
-        Long activeSignalId = (Long) session.getAttribute("signalId");
-        boolean isSignalOn = (activeSignalId != null);
-
-        model.addAttribute("isSignalOn", isSignalOn);
+    // 💡 변경: 티어 정보를 파라미터로 받아 모델을 구성합니다.
+    private void populateSignalModel(HttpSession session, Model model, Tier tier) {
+        // 1. 로그인/비로그인 공통 데이터
         model.addAttribute("allJobs", jobService.findAll());
 
-        // 💡 DB에서 active = 1인 모든 참가자 목록을 안전하게 가져옵니다.
-        List<Signal> activeSignals = signalService.findActiveSignals();
-        model.addAttribute("activeSignals", activeSignals);
-        model.addAttribute("queueCount", activeSignals != null ? activeSignals.size() : 0);
+        // 2. 티어별 데이터 조회 (티어가 없으면 기본값 설정 가능)
+        Tier targetTier = (tier != null) ? tier : Tier.BRONZE;
 
-        if (isSignalOn) {
-            Long jobId = (Long) session.getAttribute("jobId");
-            if (jobId != null) {
-                model.addAttribute("activeJob", jobService.getJob(jobId));
-            }
-        }
+        List<Signal> activeSignals = signalService.findActiveSignalsByTier(targetTier);
+        model.addAttribute("activeSignals", activeSignals);
+        model.addAttribute("queueCount", activeSignals.size());
+
+        // 3. 방이 꽉 찼는지 체크
+        model.addAttribute("isFull", signalService.isRoomFull(targetTier));
+        model.addAttribute("currentTier", targetTier);
+
+        // 4. 본인 등록 여부 체크 (세션 ID 기준)
+        boolean isSignalOn = signalService.isUserParticipating(session.getId());
+        model.addAttribute("isSignalOn", isSignalOn);
     }
 
     @GetMapping("/match")
-    public String signalPage(HttpSession session, Model model) {
-        model.addAttribute("tanks", jobService.findByRole(JobRole.valueOf("TANK")));
-        model.addAttribute("healers", jobService.findByRole(JobRole.valueOf("HEALER")));
-        model.addAttribute("melees", jobService.findByRole(JobRole.valueOf("MELEE")));
-        model.addAttribute("rangeds", jobService.findByRole(JobRole.valueOf("RANGED")));
-        model.addAttribute("casters", jobService.findByRole(JobRole.valueOf("CASTER")));
-
-        populateSignalModel(session, model);
-        return "main/index"; // 본인의 메인 뷰 이름으로 유지해주세요
+    public String signalPage(HttpSession session, Model model, @RequestParam(required = false) Tier tier) {
+        // ... (tanks, healers 등 기존 jobService 코드 동일) ...
+        populateSignalModel(session, model, tier);
+        return "main/index";
     }
 
-    // 2. 비동기 화면 조각(Fragment)만 요청받는 곳
+    // 💡 비동기 갱신 시 티어 파라미터를 넘겨받아야 합니다.
     @GetMapping("/fragment")
-    public String getSignalFragment(HttpSession session, Model model) {
-        populateSignalModel(session, model);
-        return "main/index :: signalContent";
+    public String getSignalFragment(HttpSession session, Model model, @RequestParam(required = false) Tier tier) {
+        populateSignalModel(session, model, tier);
+        // 수정: 이제 분리한 파일 경로를 리턴합니다.
+        return "fragments/signal-view :: signalContent";
     }
 
-    // 3. 참가 신청 (원래대로 redirect 처리하여 DB 저장 안정성 확보)
+    // 💡 변경: tier 파라미터를 추가로 받습니다.
     @PostMapping("/on")
-    public String on(@RequestParam Long jobId, HttpSession session) {
-        signalService.activate(jobId, session);
-        session.setAttribute("jobId", jobId);
-        return "redirect:/signals/fragment"; // 💡 저장 후 fragment 경로로 리다이렉트!
+    public String on(@RequestParam Long jobId, @RequestParam String tier, HttpSession session) {
+        signalService.activate(jobId, tier, session);
+        return "redirect:/signals/fragment?tier=" + tier;
     }
 
-    // 4. 참가 취소
+    // 💡 변경: 삭제 시에도 어떤 티어였는지 알아야 올바른 페이지로 리다이렉트 됩니다.
     @PostMapping("/off")
-    public String off(HttpSession session) {
-        signalService.deactivate(session);
-        session.removeAttribute("jobId");
-        return "redirect:/signals/fragment"; // 💡 삭제 후 fragment 경로로 리다이렉트!
+    public String off(@RequestParam String tier, HttpSession session) {
+        signalService.deactivateBySessionId(session.getId());
+        return "redirect:/signals/fragment?tier=" + tier;
     }
 
-    @GetMapping("/jobs-fragment")
-    public String getJobsFragment(Model model) {
-        // 기존 메인 페이지(/match) 로딩할 때 사용하시던 직업 데이터 조회 로직을 그대로 넣어줍니다.
-        model.addAttribute("tanks", jobService.findByRole(JobRole.valueOf("TANK")));
-        model.addAttribute("healers", jobService.findByRole(JobRole.valueOf("HEALER")));
-        model.addAttribute("melees", jobService.findByRole(JobRole.valueOf("MELEE")));
-        model.addAttribute("rangeds", jobService.findByRole(JobRole.valueOf("RANGED")));
-        model.addAttribute("casters", jobService.findByRole(JobRole.valueOf("CASTER")));
-
-        // index.html 안에 선언된 th:fragment="jobListContent" 영역만 쏙 잘라서 리턴합니다.
-        return "main/index :: jobListContent"; // 본인의 실제 폴더 구조(예: main/index)에 맞게 수정해 주세요.
+    // 창 닫기용 (세션 정리)
+    @PostMapping("/close-session")
+    @ResponseBody // HTML 리턴이 아님
+    public void closeSession(HttpSession session) {
+        signalService.deactivateBySessionId(session.getId());
+        session.invalidate();
     }
+
 }

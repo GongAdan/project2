@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="signalContent" th:remove="tag">
+    <div class="signal-wrapper">
+
+        <div class="ff14-duty-finder">
+
+            <div class="df-left-panel">
+                <div class="df-header">
+                    <span class="df-title">임무 찾기</span>
+                    <span class="df-subtitle">직업 선택창</span>
+                </div>
+
+                <div class="df-body">
+                    <div class="df-job-display">
+                        <div class="df-job-name-box">
+                            <img th:if="${!isSignalOn}" th:src="@{/images/default-job.png}" id="selected-job-icon"
+                                class="df-job-icon" alt="job">
+                            <img th:if="${isSignalOn and activeJob != null}" th:src="@{${activeJob.iconPath}}"
+                                class="df-job-icon" alt="job">
+
+                            <div th:if="${!isSignalOn}" class="select-wrapper">
+                                <select id="jobSelect" class="df-select" onchange="updateJobPreview(this)">
+                                    <option value="" disabled selected>직업을 선택하세요</option>
+                                    <option th:each="job : ${allJobs}" th:value="${job.jobId}"
+                                        th:data-icon="${job.iconPath}" th:data-role="${job.role}"
+                                        th:text="${job.jobName}"></option>
+                                </select>
+                            </div>
+                            <div th:if="${isSignalOn and activeJob != null}" class="df-selected-job-text">
+                                <span th:text="${activeJob.jobName}">직업</span>
+                            </div>
+                        </div>
+
+                        <div class="df-role-tag">
+                            <span>역할</span>
+                            <span th:if="${!isSignalOn}" id="selected-job-role" class="badge">선택 대기</span>
+                            <span th:if="${isSignalOn and activeJob != null}" class="badge"
+                                th:text="${activeJob.role.name() == 'TANK' ? '방어 역할' : (activeJob.role.name() == 'HEALER' ? '지원 역할' : '공격 역할')}">공격
+                                역할</span>
+                        </div>
+                    </div>
+
+                    <div class="df-tier-display">
+                        <div class="df-tier-name-box">
+                            <img th:src="@{'/images/tiers/' + ${currentTier != null ? currentTier.name() : 'BRONZE'} + '.png'}"
+                                id="selected-tier-icon" class="df-tier-icon" alt="tier">
+
+                            <div th:if="${!isSignalOn}" class="select-wrapper">
+                                <select id="tierSelect" class="df-select" onchange="updateTierPreview(this)">
+                                    <option value="BRONZE"
+                                        th:selected="${currentTier != null and currentTier.name() == 'BRONZE'}">브론즈
+                                    </option>
+                                    <option value="SILVER"
+                                        th:selected="${currentTier != null and currentTier.name() == 'SILVER'}">실버
+                                    </option>
+                                    <option value="GOLD"
+                                        th:selected="${currentTier != null and currentTier.name() == 'GOLD'}">골드
+                                    </option>
+                                    <option value="PLATINUM"
+                                        th:selected="${currentTier != null and currentTier.name() == 'PLATINUM'}">플래티넘
+                                    </option>
+                                    <option value="DIAMOND"
+                                        th:selected="${currentTier != null and currentTier.name() == 'DIAMOND'}">다이아몬드
+                                    </option>
+                                    <option value="CRYSTAL"
+                                        th:selected="${currentTier != null and currentTier.name() == 'CRYSTAL'}">크리스탈
+                                    </option>
+                                    <option value="OMEGA"
+                                        th:selected="${currentTier != null and currentTier.name() == 'OMEGA'}">오메가
+                                    </option>
+                                    <option value="ULTIMA"
+                                        th:selected="${currentTier != null and currentTier.name() == 'ULTIMA'}">알테마
+                                    </option>
+                                </select>
+                            </div>
+                            <div th:if="${isSignalOn}" class="df-selected-job-text">
+                                <span th:text="${currentTier}">브론즈</span>
+                            </div>
+                        </div>
+                        <div class="df-role-tag">
+                            <span>역할</span>
+                            <span class="badge" th:text="${isSignalOn ? currentTier : '선택 대기'}">선택 대기</span>
+                        </div>
+                    </div>
+
+                    <div class="df-mission-list">
+                        <div class="df-mission-header">❖ PVP 임무</div>
+                        <div class="df-mission-item">
+                            <input type="checkbox" checked disabled> 등급전 : 크리스탈라인 컨플릭트
+                        </div>
+                    </div>
+                </div>
+
+                <div class="df-footer">
+                    <div class="df-count-info">
+                        <p class="count-title">참가신청 인원</p>
+                        <div class="participant-count">
+                            <span th:text="${queueCount != null ? queueCount : 0}">0</span>/10
+                        </div>
+                    </div>
+
+                    <div class="df-btn-group">
+                        <button th:if="${!isSignalOn}" type="button" class="df-btn btn-submit"
+                            onclick="toggleSignal('on')">참가</button>
+                        <button th:if="${isSignalOn}" type="button" class="df-btn btn-cancel active-signal"
+                            onclick="toggleSignal('off')">참가 취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="df-right-panel">
+                <div class="cc-header">
+                    <span class="cc-badge">PVP</span>
+                    <span class="cc-title">크리스탈라인 컨플릭트 등급전</span>
+                </div>
+
+                <div class="cc-matrix-container">
+                    <th:block
+                        th:each="tierName : ${#strings.arraySplit('ULTIMA,OMEGA,CRYSTAL,DIAMOND,PLATINUM,GOLD,SILVER,BRONZE', ',')}">
+                        <div class="cc-tier-row"
+                            th:classappend="${currentTier != null and currentTier.name() == tierName} ? 'active-row' : ''">
+
+                            <div class="cc-row-tier-badge">
+                                <img th:src="@{'/images/tiers/' + ${tierName} + '.png'}" class="matrix-tier-img"
+                                    th:alt="${tierName}">
+                            </div>
+
+                            <div class="cc-row-slots">
+                                <div th:each="seq : ${#numbers.sequence(1, 10)}" class="slot-container">
+
+                                    <th:block
+                                        th:if="${currentTier != null and currentTier.name() == tierName and queueCount != null and queueCount >= seq}">
+                                        <span class="slot-dot filled"></span>
+                                        <div class="slot-tooltip">참가자</div>
+                                    </th:block>
+
+                                    <th:block
+                                        th:unless="${currentTier != null and currentTier.name() == tierName and queueCount != null and queueCount >= seq}">
+                                        <span class="slot-dot"></span>
+                                        <div class="slot-tooltip">비어 있음</div>
+                                    </th:block>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </th:block>
+                </div>
+
+                <div class="cc-bottom-status">
+                    <div class="cc-match-msg" th:classappend="${isSignalOn} ? 'matching' : ''">
+                        <span th:text="${isSignalOn} ? '매칭 대기중...' : '대기 등록이 필요합니다.'">상태 알림</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="map-info-section">
+            <p>현재 맵 : <span id="current-map-text">팔라이스트라</span></p>
+            <p>다음 맵 : <span id="next-map-text">절정의 구름</span></p>
+        </div>
+
+    </div>
+</div>
+
+</html>

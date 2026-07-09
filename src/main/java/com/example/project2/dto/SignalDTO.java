@@ -15,6 +15,8 @@ public class SignalDTO {
 
     private Long jobId;
 
+    private String tier;
+
     private Integer slotNumber;
 
     private Boolean active;

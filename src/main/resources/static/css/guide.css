@@ -120,10 +120,9 @@
 .review-game-card {
     display: flex;
     flex-direction: column;
-    /* 요소를 위에서 아래로 정렬 */
     width: 250px;
-    /* 아바타가 빠졌으니 가로를 살짝 슬림하게 조절 */
-    height: 110px;
+    /* 🎯 110px에서 135px로 늘려 내용 공간 확보 */
+    height: 135px;
     padding: 14px 18px;
     box-sizing: border-box;
 
@@ -134,7 +133,15 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-/* 카드 내부 텍스트 정렬 */
+.review-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* 닉네임과 세로 중앙 정렬 맞춤 */
+    width: 100%;
+    margin-bottom: 2px;
+}
+
 .review-game-card .card-info {
     display: flex;
     flex-direction: column;
@@ -148,12 +155,14 @@
     font-weight: bold;
     font-size: 14px;
     color: #1f2937;
+    line-height: 1.2;
+    /* 폰트 기본 여백 제어 */
 }
 
 .review-game-card .review-star {
     color: #3b82f6;
     font-size: 12px;
-    margin-top: -2px;
+    margin-top: 2px;
 }
 
 .review-game-card .review-content {
@@ -162,7 +171,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin: 4px 0;
+    margin: 6px 0;
+    /* 단차가 밀리는걸 방지하기 위해 마진 조절 */
 }
 
 .review-game-card .review-date {

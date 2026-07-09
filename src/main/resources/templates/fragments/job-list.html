@@ -1,0 +1,53 @@
+<section th:fragment="jobListContent" th:remove="tag">
+
+    <section class="job-group">
+        <h2>TANK</h2>
+        <div class="job-grid">
+            <a th:each="job : ${tanks}" th:href="@{/job/{id}(id=${job.jobId})}">
+                <img th:src="@{${job.iconPath}}" alt="job icon">
+                <p th:text="${job.jobName}"></p>
+            </a>
+        </div>
+    </section>
+
+    <section class="job-group">
+        <h2>HEALER</h2>
+        <div class="job-grid">
+            <a th:each="job : ${healers}" th:href="@{/job/{id}(id=${job.jobId})}">
+                <img th:src="@{${job.iconPath}}" alt="job icon">
+                <p th:text="${job.jobName}"></p>
+            </a>
+        </div>
+    </section>
+
+    <section class="job-group">
+        <h2>MELEE</h2>
+        <div class="job-grid">
+            <a th:each="job : ${melees}" th:href="@{/job/{id}(id=${job.jobId})}">
+                <img th:src="@{${job.iconPath}}" alt="job icon">
+                <p th:text="${job.jobName}"></p>
+            </a>
+        </div>
+    </section>
+
+    <section class="job-group">
+        <h2>RANGED</h2>
+        <div class="job-grid">
+            <a th:each="job : ${rangeds}" th:href="@{/job/{id}(id=${job.jobId})}">
+                <img th:src="@{${job.iconPath}}" alt="job icon">
+                <p th:text="${job.jobName}"></p>
+            </a>
+        </div>
+    </section>
+
+    <section class="job-group">
+        <h2>CASTER</h2>
+        <div class="job-grid">
+            <a th:each="job : ${casters}" th:href="@{/job/{id}(id=${job.jobId})}">
+                <img th:src="@{${job.iconPath}}" alt="job icon">
+                <p th:text="${job.jobName}"></p>
+            </a>
+        </div>
+    </section>
+
+</section>
